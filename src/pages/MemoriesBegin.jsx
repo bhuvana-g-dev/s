@@ -4,14 +4,13 @@ import AmbientAnimations from "../components/AmbientAnimations";
 import Scrapbook from "../components/Scrapbook";
 import RollerCoaster from "../components/RollerCoaster";
 
-export default function MemoriesBegin() {
+export default function MemoriesBegin({ onRideComplete }) {
   const [riding, setRiding] = useState(false);
-  const [rideDone, setRideDone] = useState(false);
 
   const handleStartRide = () => {
     if (riding) return;
     setRiding(true);
-    setTimeout(() => setRideDone(true), 2300);
+    setTimeout(() => onRideComplete && onRideComplete(), 2300);
   };
 
   return (
@@ -20,6 +19,7 @@ export default function MemoriesBegin() {
       style={{ background: "linear-gradient(180deg, #FFF8F0 0%, #FBEFE1 100%)" }}
       initial={{ opacity: 0 }}
       animate={{ opacity: 1 }}
+      exit={{ opacity: 0, transition: { duration: 0.5 } }}
       transition={{ duration: 0.9 }}
     >
       <AmbientAnimations density="light" />
@@ -50,7 +50,7 @@ export default function MemoriesBegin() {
         </div>
       </div>
 
-      {/* ride-away transition placeholder for the next (future) page */}
+      {/* ride-away transition into the cinema page */}
       {riding && (
         <motion.div
           className="fixed inset-0 z-50 flex items-center justify-center bg-warm-gradient"
@@ -60,13 +60,11 @@ export default function MemoriesBegin() {
         >
           <motion.p
             initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: rideDone ? 1 : 0, y: rideDone ? 0 : 10 }}
-            transition={{ duration: 0.6 }}
+            animate={{ opacity: [0, 1, 1], y: [10, 0, 0] }}
+            transition={{ duration: 2, times: [0, 0.4, 1] }}
             className="font-hand text-3xl text-blush-deep text-center px-6"
           >
-            {rideDone
-              ? "More memories are on their way soon... 🎡❤️"
-              : ""}
+            stepping into our cinema of memories... 🎬❤️
           </motion.p>
         </motion.div>
       )}
