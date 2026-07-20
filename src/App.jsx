@@ -5,9 +5,10 @@ import RideTransition from "./components/RideTransition";
 import HomePage from "./pages/HomePage";
 import MemoriesBegin from "./pages/MemoriesBegin";
 import CinemaOfMemories from "./pages/CinemaOfMemories";
-import NextChapter from "./pages/NextChapter";
+import OurLittleCorner from "./pages/OurLittleCorner";
+import BirthdaySurpriseRoom from "./pages/BirthdaySurpriseRoom";
 
-// View flow: loading -> home -> riding -> memories -> cinema -> next
+// View flow: loading -> home -> riding -> memories -> cinema -> corner -> birthday
 export default function App() {
   const [view, setView] = useState("loading");
 
@@ -27,9 +28,12 @@ export default function App() {
           <MemoriesBegin key="memories" onRideComplete={() => setView("cinema")} />
         )}
         {view === "cinema" && (
-          <CinemaOfMemories key="cinema" onContinue={() => setView("next")} />
+          <CinemaOfMemories key="cinema" onContinue={() => setView("corner")} />
         )}
-        {view === "next" && <NextChapter key="next" />}
+        {view === "corner" && (
+          <OurLittleCorner key="corner" onSwingAway={() => setView("birthday")} />
+        )}
+        {view === "birthday" && <BirthdaySurpriseRoom key="birthday" />}
       </AnimatePresence>
     </div>
   );
