@@ -11,6 +11,10 @@ export const callReplies = [
   "Unkooda pesunathula neram ponathey therla ❤️",
   "Amma thittunanga... athan vachiten 🤭",
   "Iru... koopudren 📞",
+  "Enaku bayama iruku",
+  "Bye,Bye.....Hey irukiyaaa",
+  "Vaikuren",
+  "Enaku unna pidikala Bhuvan",
   "Seri paru... evening pesuvom 🌇",
   "Love you ❤️",
 ];
