@@ -1,6 +1,35 @@
-// Important dates shown on the wooden desk calendar (Page 4).
-// `special` dates get extra animation treatment (currently just July 26).
+// Important dates shown on the flip-page memory calendar (Page 4).
+// `special` gets a bigger celebration treatment (July 26).
+// `extraStickers` gets extra decorative stickers on its page (Nov 26).
+// Sorted chronologically (Jan → Dec) so flipping through feels like a real calendar.
 export const calendarDates = [
+  {
+    id: "d9",
+    month: 1,
+    day: 8,
+    icon: "⭐",
+    label: "A Little Memory",
+    popup: "A little memory placeholder — waiting to be filled in.",
+    image: null,
+  },
+  {
+    id: "d8",
+    month: 1,
+    day: 14,
+    icon: "🪁",
+    label: "A Little Memory",
+    popup: "A little memory placeholder — waiting to be filled in.",
+    image: null,
+  },
+  {
+    id: "d10",
+    month: 1,
+    day: 31,
+    icon: "🎁",
+    label: "A Little Memory",
+    popup: "A little memory placeholder — waiting to be filled in.",
+    image: null,
+  },
   {
     id: "d1",
     month: 3,
@@ -8,6 +37,15 @@ export const calendarDates = [
     icon: "🎂",
     label: "Bhuvana's Birthday",
     popup: "The birthday of the person who will always celebrate yours.",
+    image: null,
+  },
+  {
+    id: "d11",
+    month: 7,
+    day: 22,
+    icon: "🤗",
+    label: "A Little Memory",
+    popup: "A little memory placeholder — waiting to be filled in.",
     image: null,
   },
   {
@@ -37,6 +75,7 @@ export const calendarDates = [
     label: "Our Special Day",
     popup: "A memory only we understand ❤️",
     image: null,
+    extraStickers: true,
   },
   {
     id: "d5",
@@ -61,15 +100,6 @@ export const calendarDates = [
     month: 12,
     day: 13,
     icon: "🧸",
-    label: "A Little Memory",
-    popup: "A little memory placeholder — waiting to be filled in.",
-    image: null,
-  },
-  {
-    id: "d8",
-    month: 1,
-    day: 14,
-    icon: "🪁",
     label: "A Little Memory",
     popup: "A little memory placeholder — waiting to be filled in.",
     image: null,
