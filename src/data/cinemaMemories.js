@@ -61,4 +61,4 @@ export const secretMemory = {
 };
 
 // Accepted nicknames for the secret question (case + whitespace insensitive).
-export const validNicknames = ["sel", "vasel", "honey", "darling", "baby", "bae", "eruma"];
+export const validNicknames = ["sel", "vasel", "honey", "darling", "baby", "bae", "eruma","sun flower","thangamey","chellamey","pattu"];
