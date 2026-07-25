@@ -53,12 +53,14 @@ export const cinemaMemories = [
 ];
 
 // The hidden Polaroid revealed only after answering the secret question correctly.
-export const secretMemory = {
-  id: "secret",
-  src: null,
-  caption: "This memory was waiting only for you. ❤️",
-  date: "A day only we remember",
-};
+export const secretPhotos = [
+  "/photos/secret1.jpg",
+  "/photos/secret2.jpg",
+  "/photos/secret3.jpg",
+  "/photos/secret4.jpg",
+  "/photos/secret5.jpg",
+  "/photos/secret5.jpg",
+];
 
 // Accepted nicknames for the secret question (case + whitespace insensitive).
 export const validNicknames = ["sel", "vasel", "honey", "darling", "baby", "bae", "eruma","sun flower","thangamey","chellamey","pattu"];
