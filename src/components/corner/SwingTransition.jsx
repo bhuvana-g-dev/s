@@ -37,7 +37,7 @@ export default function SwingTransition({ onComplete }) {
 
   useEffect(() => {
     const t1 = setTimeout(() => setPhase("clouds"), 2600);
-    const t2 = setTimeout(() => onComplete(), 4600);
+    const t2 = setTimeout(() => onComplete(), 3500);
     return () => {
       clearTimeout(t1);
       clearTimeout(t2);
@@ -98,12 +98,12 @@ export default function SwingTransition({ onComplete }) {
             </motion.span>
           ))}
           <motion.p
-            initial={{ opacity: 0, y: 10 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.5, duration: 1 }}
+            initial={{ opacity: 0 }}
+            animate={{ opacity: [0, 1, 1] }}
+            transition={{ delay: 0.4, duration: 0.5 }}
             className="relative font-hand text-2xl sm:text-3xl text-blush-deep text-center px-6"
           >
-            Every swing takes us to another beautiful memory... ❤️🌻
+            higher... and higher...
           </motion.p>
         </motion.div>
       )}
