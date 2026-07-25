@@ -54,12 +54,12 @@ export const cinemaMemories = [
 
 // The hidden Polaroid revealed only after answering the secret question correctly.
 export const secretPhotos = [
-  "/photos/secret1.jpg",
-  "/photos/secret2.jpg",
-  "/photos/secret3.jpg",
-  "/photos/secret4.jpg",
-  "/photos/secret5.jpg",
-  "/photos/secret5.jpg",
+  "/photos/secret-1.jpg",
+  "/photos/secret-2.jpg",
+  "/photos/secret-3.jpg",
+  "/photos/secret-4.jpg",
+  "/photos/secret-5.jpg",
+  "/photos/secret-6.jpg",
 ];
 
 // Accepted nicknames for the secret question (case + whitespace insensitive).
