@@ -207,20 +207,23 @@ export default function StickerWall({ onSwingClick }) {
         ))}
       </div>
 
-      {/* the tiny, nearly-hidden secret swing sticker */}
-      <motion.button
-        onClick={onSwingClick}
-        className="absolute bottom-2 right-3 text-lg opacity-60 hover:opacity-100 group"
-        whileHover={{ scale: 1.3, rotate: 8 }}
-        animate={{ y: [0, -3, 0] }}
-        transition={{ duration: 2.4, repeat: Infinity }}
-        aria-label="Secret"
-      >
-        {secretSwingSticker.icon}
-        <span className="absolute bottom-full right-0 mb-1 whitespace-nowrap font-hand text-xs text-lavender-deep opacity-0 group-hover:opacity-100 transition-opacity">
-          {secretSwingSticker.hoverText}
-        </span>
-      </motion.button>
+      {/* the secret swing sticker — subtle, but actually visible this time */}
+      <div className="flex justify-center mt-4">
+        <motion.button
+          onClick={onSwingClick}
+          className="relative flex flex-col items-center focus:outline-none group"
+          whileHover={{ scale: 1.15 }}
+          whileTap={{ scale: 0.92 }}
+          animate={{ y: [0, -4, 0] }}
+          transition={{ duration: 2.4, repeat: Infinity }}
+          aria-label="Secret"
+        >
+          <span className="text-2xl opacity-90 group-hover:opacity-100">{secretSwingSticker.icon}</span>
+          <span className="h-4 mt-0.5 font-hand text-xs text-lavender-deep opacity-0 group-hover:opacity-100 transition-opacity">
+            {secretSwingSticker.hoverText}
+          </span>
+        </motion.button>
+      </div>
 
       <AnimatePresence>
         {modal?.type === "simple" && (
