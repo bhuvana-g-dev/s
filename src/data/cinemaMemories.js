@@ -1,6 +1,4 @@
 // Placeholder gallery items for the cinematic memory page.
-// Replace `src` with real photo/video paths once you have them
-// (e.g. "/photos/beach-day.jpg" or "/videos/road-trip.mp4").
 export const cinemaMemories = [
   {
     id: "m1",
@@ -52,15 +50,21 @@ export const cinemaMemories = [
   },
 ];
 
-// The hidden Polaroid revealed only after answering the secret question correctly.
+// Hidden photo slideshow — shown after a correct nickname answer.
+// Each entry needs src (path) and caption. src: null shows a placeholder.
 export const secretPhotos = [
-  "/photos/secret-1.jpg",
-  "/photos/secret-2.jpg",
-  "/photos/secret-3.jpg",
-  "/photos/secret-4.jpg",
-  "/photos/secret-5.jpg",
-  "/photos/secret-6.jpg",
+  { id: "s1", src: "/photos/secret-1.jpg", caption: "This memory was waiting only for you. ❤️" },
+  { id: "s2", src: "/photos/secret-2.jpg", caption: "Us, always. ❤️" },
+  { id: "s3", src: "/photos/secret-3.jpg", caption: "One of my favourites. 🌻" },
+  { id: "s4", src: "/photos/secret-4.jpg", caption: "Look at us. ❤️" },
+  { id: "s5", src: "/photos/secret-5.jpg", caption: "A moment I keep close. 💌" },
+  { id: "s6", src: "/photos/secret-6.jpg", caption: "Every photo with you is a treasure. ❤️" },
 ];
 
-// Accepted nicknames for the secret question (case + whitespace insensitive).
-export const validNicknames = ["sel", "vasel", "honey", "darling", "baby", "bae", "eruma","sun flower","thangamey","chellamey","pattu"];
+// Accepted nicknames — case + whitespace insensitive, comma-separated input OK.
+// Add more any time — just lowercase them here.
+export const validNicknames = [
+  "sel", "vasel", "honey", "darling", "baby", "bae", "eruma",
+  "sun flower", "sunflower", "thangamey", "chellamey", "pattu",
+  "selvi", "kutty", "paavam",
+];
