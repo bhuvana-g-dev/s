@@ -207,21 +207,20 @@ export default function StickerWall({ onSwingClick }) {
         ))}
       </div>
 
-      {/* the secret swing sticker — subtle, but actually visible this time */}
-      <div className="flex justify-center mt-4">
+      {/* secret swing button — visible and centered below sticker grid */}
+      <div className="mt-5 flex flex-col items-center gap-1">
+        <div className="w-full h-px bg-beige-deep/30 mb-3" />
         <motion.button
           onClick={onSwingClick}
-          className="relative flex flex-col items-center focus:outline-none group"
-          whileHover={{ scale: 1.15 }}
+          className="flex flex-col items-center gap-1 focus:outline-none"
+          whileHover={{ scale: 1.12 }}
           whileTap={{ scale: 0.92 }}
-          animate={{ y: [0, -4, 0] }}
-          transition={{ duration: 2.4, repeat: Infinity }}
-          aria-label="Secret"
+          animate={{ y: [0, -5, 0] }}
+          transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+          aria-label="Go to next page"
         >
-          <span className="text-2xl opacity-90 group-hover:opacity-100">{secretSwingSticker.icon}</span>
-          <span className="h-4 mt-0.5 font-hand text-xs text-lavender-deep opacity-0 group-hover:opacity-100 transition-opacity">
-            {secretSwingSticker.hoverText}
-          </span>
+          <span className="text-3xl drop-shadow-sm">{secretSwingSticker.icon}</span>
+          <span className="font-hand text-sm text-lavender-deep">{secretSwingSticker.hoverText}</span>
         </motion.button>
       </div>
 
