@@ -25,9 +25,9 @@ export const quizQuestions = [
   {
     id: 4,
     icon: "👑",
-    question: "When is Selva's birthday?",
-    options: ["October 25", "March 6", "July 26", "December 12"],
-    correct: "July 26",
+    question: "When is our first phone call?",
+    options: ["August 16", "September 6", "July 30", "october 12"],
+    correct: "August 16",
   },
   {
     id: 5,
@@ -70,8 +70,15 @@ export const quizQuestions = [
     options: ["Selva", "Both", "Nobody", "Bhuvana"],
     correct: "Bhuvana",
   },
-  {
+   {
     id: 10,
+    icon: "😜",
+    question: "When is our first chat?",
+    options: ["13 August", "6 August", "10 August", "17 August"],
+    correct: "13 August",
+  },
+  {
+    id: 11,
     icon: "💌",
     question: "Will Bhuvana ever forget you?",
     options: ["No", "Never", "Not Even in Another Lifetime", "Impossible"],
