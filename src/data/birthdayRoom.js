@@ -37,5 +37,18 @@ export const wishMessage    = "Make a wish, Sunflower... 🌻";
 export const wishLockedMsg  = "Wish locked safely with me. ❤️";
 export const endingText     = "Our story doesn't end here...\n\nwe just haven't lived the next page yet. ❤️";
 export const finalEnvelopeLabel    = "For my Sunflower 🌻";
-export const finalLetterPlaceholder = "[Bhuvana's final birthday letter will be added here]";
+export const finalLetterPlaceholder = `என் அன்பு Selva,
+
+இன்று உன் பிறந்தநாள்...
+
+உன்னோட சிரிப்பு பாத்தாலே என் மனசு சந்தோஷமாகிடுது.
+நீ என் life-ல வந்தது என்னோட best thing ❤️
+
+உன்னை நான் எப்போவும் miss பண்றேன்,
+உன்னோட ஒவ்வொரு moment-உம் என்னோட heart-ல safe ஆ இருக்கு.
+
+Happy Birthday என் Sunflower 🌻
+
+உன்னை மறக்கவே மாட்டேன்,
+Bhuvana ❤️`;
 export const finalLetterSignature   = "With love,\nBhuvana ❤️";
