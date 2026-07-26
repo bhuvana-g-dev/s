@@ -1,3 +1,4 @@
+import BirthdayCake from "../components/birthday-room/BirthdayCake";
 import { useState, useEffect } from "react";
 import { motion, AnimatePresence } from "framer-motion";
 import {
@@ -335,7 +336,7 @@ export default function BirthdaySurpriseRoom() {
             ✨ The Birthday Girl ✨
           </motion.p>
           <SelvaSpotlight />
-          <Cake />
+          <BirthdayCake />
         </div>
 
         {/* ── together photos wall ── */}
