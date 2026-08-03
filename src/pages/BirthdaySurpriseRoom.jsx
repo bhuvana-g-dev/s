@@ -1,5 +1,5 @@
-import BirthdayCake from "../components/birthday-room/BirthdayCake";
 import { useState, useEffect } from "react";
+import MadeWithLove from "../components/MadeWithLove";
 import { motion, AnimatePresence } from "framer-motion";
 import {
   selvaSoloPhotos,
@@ -27,6 +27,7 @@ function FairyLights({ count = 16 }) {
           💡
         </motion.span>
       ))}
+          <MadeWithLove />
     </div>
   );
 }
@@ -336,7 +337,7 @@ export default function BirthdaySurpriseRoom() {
             ✨ The Birthday Girl ✨
           </motion.p>
           <SelvaSpotlight />
-          <BirthdayCake />
+          <Cake />
         </div>
 
         {/* ── together photos wall ── */}
