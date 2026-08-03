@@ -1,4 +1,5 @@
 import { useState } from "react";
+import MadeWithLove from "../components/MadeWithLove";
 import { motion, AnimatePresence } from "framer-motion";
 import AmbientAnimations from "../components/AmbientAnimations";
 import MemoryCalendar from "../components/corner/MemoryCalendar";
@@ -15,6 +16,7 @@ function DecorPolaroid({ className, rotate }) {
       style={{ transform: `rotate(${rotate}deg)` }}
     >
       <div className="w-full h-full bg-gradient-to-br from-blush-light to-lavender-light" />
+          <MadeWithLove />
     </div>
   );
 }

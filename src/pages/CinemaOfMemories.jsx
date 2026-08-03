@@ -1,4 +1,5 @@
 import { useState } from "react";
+import MadeWithLove from "../components/MadeWithLove";
 import { motion, AnimatePresence } from "framer-motion";
 import CinemaAtmosphere from "../components/cinema/CinemaAtmosphere";
 import FilmDecor from "../components/cinema/FilmDecor";
@@ -71,6 +72,7 @@ export default function CinemaOfMemories({ onContinue }) {
       <AnimatePresence>
         {driving && <CarDriveTransition onComplete={onContinue} />}
       </AnimatePresence>
+          <MadeWithLove />
     </motion.div>
   );
 }

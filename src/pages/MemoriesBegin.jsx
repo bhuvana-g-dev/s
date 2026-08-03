@@ -1,4 +1,5 @@
 import { useState } from "react";
+import MadeWithLove from "../components/MadeWithLove";
 import { motion } from "framer-motion";
 import AmbientAnimations from "../components/AmbientAnimations";
 import Scrapbook from "../components/Scrapbook";
@@ -68,6 +69,7 @@ export default function MemoriesBegin({ onRideComplete }) {
           </motion.p>
         </motion.div>
       )}
+          <MadeWithLove />
     </motion.div>
   );
 }
