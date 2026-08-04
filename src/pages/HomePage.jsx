@@ -153,8 +153,7 @@ export default function HomePage({ onRideAway }) {
           alt=""
           className="w-full h-full object-cover"
           style={{
-            objectPosition: "center top",
-            // orientate correctly (EXIF) + warm tone
+            objectPosition: "center 30%",
             filter: "brightness(0.72) saturate(1.15)",
           }}
         />
@@ -182,7 +181,7 @@ export default function HomePage({ onRideAway }) {
 
       {/* ─── page content ─── */}
       <motion.div
-        className="relative z-10 flex flex-col items-center pt-16 sm:pt-24 pb-10"
+        className="relative z-10 flex flex-col items-center pt-8 sm:pt-24 pb-10"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}
