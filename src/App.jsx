@@ -7,10 +7,18 @@ import MemoriesBegin from "./pages/MemoriesBegin";
 import CinemaOfMemories from "./pages/CinemaOfMemories";
 import OurLittleCorner from "./pages/OurLittleCorner";
 import BirthdaySurpriseRoom from "./pages/BirthdaySurpriseRoom";
+import HeartNav from "./components/HeartNav";
 
-// View flow: loading -> home -> riding -> memories -> cinema -> corner -> birthday
+// Direct-jump views (skips cinematic transitions when using the heart nav)
+const DIRECT_PAGES = ["home", "memories", "cinema", "corner", "birthday"];
+
 export default function App() {
   const [view, setView] = useState("loading");
+
+  // Called by HeartNav — jump directly without a transition screen
+  const handleNavJump = (key) => {
+    if (DIRECT_PAGES.includes(key)) setView(key);
+  };
 
   return (
     <div className="font-body">
@@ -35,6 +43,9 @@ export default function App() {
         )}
         {view === "birthday" && <BirthdaySurpriseRoom key="birthday" />}
       </AnimatePresence>
+
+      {/* ── global heart navigation — always on top, never during loading/transitions ── */}
+      <HeartNav currentView={view} onNavigate={handleNavJump} />
     </div>
   );
 }
