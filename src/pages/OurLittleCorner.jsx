@@ -16,7 +16,6 @@ function DecorPolaroid({ className, rotate }) {
       style={{ transform: `rotate(${rotate}deg)` }}
     >
       <div className="w-full h-full bg-gradient-to-br from-blush-light to-lavender-light" />
-          <MadeWithLove />
     </div>
   );
 }
@@ -75,6 +74,7 @@ export default function OurLittleCorner({ onSwingAway }) {
       <AnimatePresence>
         {swinging && <SwingTransition onComplete={onSwingAway} />}
       </AnimatePresence>
+      <MadeWithLove />
     </motion.div>
   );
 }

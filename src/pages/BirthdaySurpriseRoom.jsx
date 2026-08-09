@@ -27,7 +27,6 @@ function FairyLights({ count = 16 }) {
           💡
         </motion.span>
       ))}
-          <MadeWithLove />
     </div>
   );
 }
