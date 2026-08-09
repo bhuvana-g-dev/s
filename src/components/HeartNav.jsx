@@ -53,7 +53,7 @@ export default function HeartNav({ currentView, onNavigate }) {
   return (
     <div
       ref={menuRef}
-      className="fixed bottom-5 right-5 z-[999] flex flex-col items-end gap-3"
+      className="fixed bottom-5 left-5 z-[999] flex flex-col items-start gap-3"
       aria-label="Page navigation"
     >
       {/* ── menu items — appear above the heart ── */}
@@ -64,7 +64,7 @@ export default function HeartNav({ currentView, onNavigate }) {
             animate={{ opacity: 1, y: 0, scale: 1 }}
             exit={{ opacity: 0, y: 10, scale: 0.94 }}
             transition={{ duration: 0.25, ease: "easeOut" }}
-            className="flex flex-col gap-2 items-end"
+            className="flex flex-col gap-2 items-start"
           >
             {PAGES.map((page, i) => {
               const isActive = page.key === currentView;
