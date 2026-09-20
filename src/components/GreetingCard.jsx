@@ -14,12 +14,12 @@ export default function GreetingCard() {
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.9, ease: "easeOut" }}
       className="relative z-10 rounded-[2rem] px-5 py-7 sm:px-12 sm:py-14 max-w-xl w-full mx-4 text-center"
-      style={{
-        background: "rgba(20,10,15,0.35)",
-        backdropFilter: "blur(8px) saturate(1.2)",
-        WebkitBackdropFilter: "blur(8px) saturate(1.2)",
-        border: "1px solid rgba(255,255,255,0.22)",
-        boxShadow: "0 8px 40px rgba(0,0,0,0.3), inset 0 1px 0 rgba(255,255,255,0.15)",
+           style={{
+        background: "transparent",
+        backdropFilter: "none",
+        WebkitBackdropFilter: "none",
+        border: "none",
+        boxShadow: "none",
       }}
     >
       <span className="absolute -top-3 -left-3 text-2xl animate-sparkle">✨</span>
