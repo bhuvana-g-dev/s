@@ -7,6 +7,7 @@ import Quiz from "../components/corner/Quiz";
 import CallLog from "../components/corner/CallLog";
 import StickerWall from "../components/corner/StickerWall";
 import SwingTransition from "../components/corner/SwingTransition";
+import { secretSwingSticker } from "../data/stickers";
 
 /** A little tilted polaroid used as background decor. */
 function DecorPolaroid({ className, rotate }) {
@@ -66,8 +67,36 @@ export default function OurLittleCorner({ onSwingAway }) {
           {/* Right column */}
           <div className="flex flex-col gap-6 sm:gap-8">
             <CallLog />
-            <StickerWall onSwingClick={() => setSwinging(true)} />
+            <StickerWall />
           </div>
+        </div>
+
+        {/* next page — sits after all boxes, not inside any of them */}
+        <div className="mt-12 sm:mt-16 flex flex-col items-center">
+          <span className="font-hand text-sm text-ink/35 mb-3">psst… there's more ✨</span>
+          <motion.button
+            onClick={() => setSwinging(true)}
+            className="group relative flex flex-col items-center gap-2 rounded-3xl px-8 py-5 bg-white/70 border border-beige-deep/30 shadow-soft focus:outline-none"
+            whileHover={{ scale: 1.06, y: -3 }}
+            whileTap={{ scale: 0.94 }}
+            animate={{ y: [0, -6, 0] }}
+            transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
+            aria-label="Go to next page"
+          >
+            <motion.span
+              className="text-4xl drop-shadow-sm"
+              animate={{ rotate: [0, -8, 8, 0] }}
+              transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
+            >
+              {secretSwingSticker.icon}
+            </motion.span>
+            <span className="font-hand text-base text-lavender-deep">
+              {secretSwingSticker.hoverText}
+            </span>
+            <span className="font-body text-[11px] uppercase tracking-widest text-ink/30 group-hover:text-lavender-deep transition-colors">
+              tap to continue →
+            </span>
+          </motion.button>
         </div>
       </div>
 
