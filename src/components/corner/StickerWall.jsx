@@ -1,6 +1,6 @@
 import { useState } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { stickers, secretSwingSticker } from "../../data/stickers";
+import { stickers } from "../../data/stickers";
 
 /** Generic popup used for simple text/envelope/letter/qr actions. */
 function SimplePopup({ title, text, onClose }) {
@@ -164,7 +164,7 @@ function StickerButton({ sticker, index, onActivate }) {
   );
 }
 
-export default function StickerWall({ onSwingClick }) {
+export default function StickerWall() {
   const [modal, setModal] = useState(null); // { type: 'simple'|'player', sticker }
   const [effect, setEffect] = useState(null);
 
@@ -205,23 +205,6 @@ export default function StickerWall({ onSwingClick }) {
         {stickers.map((s, i) => (
           <StickerButton key={s.id} sticker={s} index={i} onActivate={handleActivate} />
         ))}
-      </div>
-
-      {/* secret swing button — visible and centered below sticker grid */}
-      <div className="mt-5 flex flex-col items-center gap-1">
-        <div className="w-full h-px bg-beige-deep/30 mb-3" />
-        <motion.button
-          onClick={onSwingClick}
-          className="flex flex-col items-center gap-1 focus:outline-none"
-          whileHover={{ scale: 1.12 }}
-          whileTap={{ scale: 0.92 }}
-          animate={{ y: [0, -5, 0] }}
-          transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
-          aria-label="Go to next page"
-        >
-          <span className="text-3xl drop-shadow-sm">{secretSwingSticker.icon}</span>
-          <span className="font-hand text-sm text-lavender-deep">{secretSwingSticker.hoverText}</span>
-        </motion.button>
       </div>
 
       <AnimatePresence>
