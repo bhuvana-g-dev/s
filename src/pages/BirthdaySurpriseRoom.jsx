@@ -3,6 +3,8 @@ import MadeWithLove from "../components/MadeWithLove";
 import { motion, AnimatePresence } from "framer-motion";
 import BirthdayCake from "../components/birthday-room/BirthdayCake";
 import BirthdayBanner from "../components/birthday-room/BirthdayBanner";
+import CornerFairyLights from "../components/birthday-room/CornerFairyLights";
+import CornerBalloons from "../components/birthday-room/CornerBalloons";
 import {
   selvaSoloPhotos,
   togetherPhotos,
@@ -14,48 +16,19 @@ import {
   finalLetterSignature,
 } from "../data/birthdayRoom";
 
-// ─── Fairy lights row ────────────────────────────────────────
-function FairyLights({ count = 16 }) {
-  return (
-    <div className="flex justify-between px-1 w-full">
-      {Array.from({ length: count }, (_, i) => (
-        <motion.span
-          key={i}
-          className="text-base sm:text-lg"
-          animate={{ opacity: [0.2, 1, 0.2] }}
-          transition={{ duration: 1.4 + (i % 3) * 0.3, repeat: Infinity, delay: i * 0.1 }}
-        >
-          💡
-        </motion.span>
-      ))}
-    </div>
-  );
-}
-
-// ─── Ambient balloons + confetti ─────────────────────────────
+// ─── Subtle ambient sparkles + party motes (clean background without blocking text) ───
 function AmbientParty() {
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
-      {Array.from({ length: 12 }, (_, i) => (
-        <motion.span
-          key={`b${i}`}
-          className="absolute text-3xl"
-          style={{ left: `${(i * 9 + 2) % 100}%`, bottom: "-10%" }}
-          animate={{ y: "-120vh", opacity: [0, 1, 1, 0] }}
-          transition={{ duration: 14 + (i % 5), delay: i * 1.2, repeat: Infinity, ease: "easeInOut" }}
-        >
-          🎈
-        </motion.span>
-      ))}
-      {Array.from({ length: 16 }, (_, i) => (
+      {Array.from({ length: 18 }, (_, i) => (
         <motion.span
           key={`c${i}`}
-          className="absolute text-sm"
-          style={{ left: `${(i * 7 + 3) % 100}%`, top: "-5%" }}
-          animate={{ y: "110vh", opacity: [0, 1, 0], rotate: 360 }}
-          transition={{ duration: 8 + (i % 4), delay: i * 0.7, repeat: Infinity, ease: "linear" }}
+          className="absolute text-sm select-none"
+          style={{ left: `${(i * 5.6 + 2) % 96}%`, top: "-5%" }}
+          animate={{ y: "110vh", opacity: [0, 0.75, 0], rotate: 360 }}
+          transition={{ duration: 9 + (i % 5), delay: i * 0.45, repeat: Infinity, ease: "linear" }}
         >
-          {["🎊","✨","🎉","🌸"][i % 4]}
+          {["✨", "🌸", "⭐", "💕", "🎊"][i % 5]}
         </motion.span>
       ))}
     </div>
@@ -247,7 +220,9 @@ export default function BirthdaySurpriseRoom() {
   return (
     <motion.div
       className="relative min-h-screen w-full overflow-hidden"
-      style={{ background: "radial-gradient(ellipse at 50% 0%, rgba(242,166,90,0.4) 0%, rgba(61,33,64,0.95) 50%, rgba(26,16,37,1) 100%)" }}
+      style={{
+        background: "radial-gradient(circle at 50% 32%, #5A2B3B 0%, #431E2B 35%, #2B121C 68%, #17070F 100%)",
+      }}
       initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ duration:1 }}
     >
       <AnimatePresence>
@@ -255,6 +230,17 @@ export default function BirthdaySurpriseRoom() {
       </AnimatePresence>
 
       <div className="film-grain" />
+
+      {/* ── Warm ambient spotlight matching studio lighting ── */}
+      <div
+        className="absolute inset-0 pointer-events-none"
+        style={{
+          background: "radial-gradient(circle at 50% 30%, rgba(246, 185, 140, 0.28) 0%, rgba(225, 116, 151, 0.12) 42%, transparent 72%)",
+        }}
+      />
+
+      <CornerFairyLights />
+      <CornerBalloons />
       <AmbientParty />
 
       <motion.div
@@ -262,21 +248,23 @@ export default function BirthdaySurpriseRoom() {
         transition={{ duration:1 }}
         className="relative z-10 max-w-5xl mx-auto px-4 sm:px-8 py-10 sm:py-16"
       >
-        {/* ── fairy lights top ── */}
-        <FairyLights count={18} />
-
         {/* ── wall banner ── */}
         <BirthdayBanner />
 
-        {/* ── fairy lights below banner ── */}
-        <FairyLights count={14} />
-
         {/* ── centre spotlight: her photos + cake ── */}
         <div className="flex flex-col items-center my-10 sm:my-14">
-          <motion.p initial={{ opacity:0 }} animate={{ opacity:1 }} transition={{ delay:0.6 }}
-            className="font-hand text-xl text-white/70 mb-6">
-            ✨ The Birthday Girl ✨
-          </motion.p>
+          <motion.div
+            initial={{ opacity: 0, y: 6 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ delay: 0.6 }}
+            className="inline-flex items-center gap-2 sm:gap-2.5 px-5 sm:px-6 py-1.5 rounded-full bg-black/45 backdrop-blur-md border border-[#E8B868]/50 shadow-[0_2px_14px_rgba(0,0,0,0.4)] mb-6 select-none"
+          >
+            <span className="text-[#F6C15C] text-xs">✦</span>
+            <span className="font-cinzel text-xs sm:text-sm font-bold tracking-[0.24em] text-[#FFF0D4] uppercase">
+              The Birthday Girl
+            </span>
+            <span className="text-[#F6C15C] text-xs">✦</span>
+          </motion.div>
           <SelvaSpotlight />
           <BirthdayCake wishMsg={wishMessage} wishLockedText={wishLockedMsg} />
         </div>
@@ -287,11 +275,9 @@ export default function BirthdaySurpriseRoom() {
           <p className="font-hand text-xl sm:text-2xl text-white/70 text-center mb-6">
             📸 Us, always... ❤️
           </p>
-          <FairyLights count={12} />
-          <div className="mt-6">
+          <div className="mt-4">
             <TogetherWall onClickPhoto={setViewerIdx} />
           </div>
-          <div className="mt-4"><FairyLights count={12} /></div>
         </motion.div>
 
         {/* ── final letter ── */}
