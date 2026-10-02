@@ -2,10 +2,10 @@ import { useState, useEffect } from "react";
 import MadeWithLove from "../components/MadeWithLove";
 import { motion, AnimatePresence } from "framer-motion";
 import BirthdayCake from "../components/birthday-room/BirthdayCake";
+import BirthdayBanner from "../components/birthday-room/BirthdayBanner";
 import {
   selvaSoloPhotos,
   togetherPhotos,
-  wallBannerLines,
   wishMessage,
   wishLockedMsg,
   endingText,
@@ -266,18 +266,7 @@ export default function BirthdaySurpriseRoom() {
         <FairyLights count={18} />
 
         {/* ── wall banner ── */}
-        <motion.div initial={{ opacity:0, y:-16 }} animate={{ opacity:1, y:0 }}
-          transition={{ delay:0.3, duration:1 }} className="text-center mt-4 mb-8">
-          {wallBannerLines.map((line, i) => (
-            <h1 key={i} className="font-display text-3xl sm:text-5xl text-white leading-tight
-              drop-shadow-[0_0_20px_rgba(242,166,90,0.7)]">
-              {line}
-            </h1>
-          ))}
-          <p className="font-hand text-lg text-white/60 mt-2">
-            Welcome to your little birthday world... ❤️
-          </p>
-        </motion.div>
+        <BirthdayBanner />
 
         {/* ── fairy lights below banner ── */}
         <FairyLights count={14} />

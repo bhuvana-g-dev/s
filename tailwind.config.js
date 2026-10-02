@@ -41,6 +41,8 @@ export default {
         display: ['"Fraunces"', 'serif'],
         body: ['"Nunito"', 'sans-serif'],
         hand: ['"Caveat"', 'cursive'],
+        cinzel: ['"Cinzel"', '"Playfair Display"', 'serif'],
+        playfair: ['"Playfair Display"', '"Fraunces"', 'serif'],
       },
       boxShadow: {
         glass: '0 8px 32px 0 rgba(107, 81, 80, 0.15)',
