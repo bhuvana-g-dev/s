@@ -4,292 +4,495 @@ import { jarNotes, birthdayJarNote } from "../data/messages";
 import { isBirthday, pickForToday } from "../hooks/dateUtils";
 
 /**
- * A beautiful, hand-crafted 3D glass apothecary/memory jar
- * with curved shoulders, cork stopper, golden twine with a heart tag,
- * colorful folded love notes, and glowing fireflies inside.
+ * Heart path centered at (0, 0) for easy scaling and rotation.
+ */
+function HeartShape({ size = 20, fill = "#FF8FAB", stroke = null, strokeWidth = 1.5, opacity = 1 }) {
+  const s = size / 20;
+  return (
+    <path
+      d="M 0 9.2 C -6.5 3.3 -10 0.2 -10 -3.6 C -10 -6.6 -7.5 -9 -4.5 -9 C -2.7 -9 -1 -8.1 0 -6.8 C 1 -8.1 2.7 -9 4.5 -9 C 7.5 -9 10 -6.6 10 -3.6 C 10 0.2 6.5 3.3 0 9.2 Z"
+      transform={`scale(${s})`}
+      fill={fill}
+      stroke={stroke || "none"}
+      strokeWidth={stroke ? strokeWidth / s : 0}
+      strokeLinecap="round"
+      strokeLinejoin="round"
+      opacity={opacity}
+    />
+  );
+}
+
+/**
+ * 4-Point Sparkling Star Glint centered at (0, 0)
+ */
+function StarSparkle({ cx, cy, size = 18, delay = 0 }) {
+  const r = size / 2;
+  return (
+    <motion.g
+      transform={`translate(${cx}, ${cy})`}
+      animate={{
+        scale: [0.85, 1.3, 0.85],
+        opacity: [0.75, 1, 0.75],
+      }}
+      transition={{
+        duration: 2.2 + (delay % 2) * 0.4,
+        repeat: Infinity,
+        ease: "easeInOut",
+        delay: delay,
+      }}
+    >
+      {/* Radiant golden halo */}
+      <circle r={r * 1.8} fill="url(#starHalo)" />
+      {/* 4-point diamond star */}
+      <path
+        d={`M 0 ${-r} Q 0 0 ${-r} 0 Q 0 0 0 ${r} Q 0 0 ${r} 0 Q 0 0 0 ${-r} Z`}
+        fill="#FFFFFF"
+      />
+      {/* Center glint */}
+      <circle r={r * 0.3} fill="#FFEAA7" />
+    </motion.g>
+  );
+}
+
+/**
+ * Warm glowing fairy light bulb
+ */
+function FairyBulb({ cx, cy, delay = 0, size = 3.2 }) {
+  return (
+    <motion.g
+      transform={`translate(${cx}, ${cy})`}
+      animate={{
+        scale: [0.9, 1.18, 0.9],
+        opacity: [0.8, 1, 0.8],
+      }}
+      transition={{
+        duration: 2.4,
+        repeat: Infinity,
+        ease: "easeInOut",
+        delay: delay,
+      }}
+    >
+      <circle r={size * 2.6} fill="url(#bulbGlow)" />
+      <circle r={size} fill="#FFF9E6" />
+      <circle r={size * 0.45} fill="#FFFFFF" />
+    </motion.g>
+  );
+}
+
+/**
+ * A romantic, fairy-light glass wishing jar matching the user's reference:
+ * - Tall cylindrical glass bottle with rounded base corners
+ * - Cork stopper at top with pastel pink ribbon & bow
+ * - Dangling white gift tag with pink heart
+ * - Spiraling golden fairy light wire with bright sparkling star glints (✦)
+ * - Pastel pink & peach hearts floating gracefully inside
+ * - Whimsical sketch/doodle hearts floating in the air outside
+ * - Stacked pastel folded origami love notes at the bottom
  */
 function JarIllustration() {
-  // Folded notes piled gracefully at the bottom
+  // Folded love notes nestled at the bottom
   const notes = [
-    { x: 72,  y: 248, rot: -14, color: "#F7CAD0", stroke: "#E08398", type: "env" },
-    { x: 104, y: 252, rot: 6,   color: "#D8B4E2", stroke: "#A98DD1", type: "note" },
-    { x: 136, y: 246, rot: 18,  color: "#FFF1B8", stroke: "#E2A64E", type: "env" },
-    { x: 86,  y: 228, rot: 12,  color: "#EDE4F8", stroke: "#CBB6EA", type: "note" },
-    { x: 118, y: 232, rot: -10, color: "#FDE2E4", stroke: "#E17497", type: "env" },
-    { x: 148, y: 234, rot: 8,   color: "#FFE5D9", stroke: "#E07A5F", type: "note" },
-    { x: 96,  y: 210, rot: -6,  color: "#FFF5EB", stroke: "#D4A373", type: "env" },
-    { x: 128, y: 212, rot: 15,  color: "#F8B4C8", stroke: "#E8628C", type: "note" },
-    { x: 112, y: 192, rot: -4,  color: "#E2ECE9", stroke: "#81B29A", type: "env" },
+    { x: 82,  y: 304, rot: -14, color: "#FFAEC0", stroke: "#E08398", type: "env", w: 32, h: 22 },
+    { x: 114, y: 310, rot: 6,   color: "#FFFDF8", stroke: "#E8C8BE", type: "note", w: 30, h: 20 },
+    { x: 148, y: 302, rot: 18,  color: "#FFE2D1", stroke: "#DFA88E", type: "env", w: 32, h: 22 },
+    { x: 92,  y: 284, rot: 12,  color: "#FFF9F4", stroke: "#E2BCAE", type: "note", w: 28, h: 18 },
+    { x: 126, y: 288, rot: -10, color: "#FFCCD5", stroke: "#E5879E", type: "env", w: 34, h: 22 },
+    { x: 156, y: 286, rot: 8,   color: "#FFDFCE", stroke: "#D89A80", type: "note", w: 30, h: 20 },
+    { x: 104, y: 266, rot: -6,  color: "#FFB6C6", stroke: "#E07A94", type: "env", w: 32, h: 22 },
+    { x: 138, y: 268, rot: 15,  color: "#FFFDF6", stroke: "#DEC2BA", type: "note", w: 28, h: 19 },
+    { x: 122, y: 250, rot: -4,  color: "#FFE4D6", stroke: "#DDA490", type: "env", w: 30, h: 20 },
   ];
 
-  // Floating magic fireflies inside the jar
-  const fireflies = [
-    { cx: 80,  cy: 160, r: 2.8, dur: 2.4, delay: 0 },
-    { cx: 145, cy: 150, r: 2.4, dur: 2.8, delay: 0.6 },
-    { cx: 115, cy: 175, r: 3.2, dur: 2.2, delay: 1.2 },
-    { cx: 95,  cy: 135, r: 2.2, dur: 3.0, delay: 0.3 },
-    { cx: 135, cy: 120, r: 2.6, dur: 2.6, delay: 0.9 },
+  // Floating pastel hearts inside the jar
+  const floatingHearts = [
+    { cx: 140, cy: 118, size: 16, color: "#FF8FAB", rot: -8, delay: 0 },
+    { cx: 172, cy: 162, size: 21, color: "#FFBE98", rot: 10, delay: 0.6 },
+    { cx: 130, cy: 194, size: 13, color: "#FF9FB2", rot: -5, delay: 1.2 },
+    { cx: 164, cy: 238, size: 17, color: "#FFAEC0", rot: 8, delay: 0.4 },
+    { cx: 146, cy: 254, size: 14, color: "#FFB4A2", rot: -12, delay: 0.9 },
   ];
 
   return (
-    <div className="relative flex justify-center items-center">
+    <div className="relative flex justify-center items-center select-none">
       {/* ── Warm ambient backlight behind jar ── */}
       <div
-        className="absolute w-64 sm:w-80 h-80 sm:h-96 rounded-full pointer-events-none -z-10 blur-2xl opacity-75"
+        className="absolute w-72 sm:w-88 h-88 sm:h-104 rounded-full pointer-events-none -z-10 blur-3xl opacity-80"
         style={{
           background:
-            "radial-gradient(circle, rgba(254, 215, 170, 0.45) 0%, rgba(225, 116, 151, 0.22) 45%, transparent 75%)",
+            "radial-gradient(circle, rgba(254, 215, 170, 0.5) 0%, rgba(255, 174, 192, 0.3) 45%, transparent 75%)",
         }}
       />
 
       <svg
-        viewBox="0 0 240 310"
-        className="w-56 sm:w-64 md:w-72 h-auto overflow-visible filter drop-shadow-[0_16px_36px_rgba(0,0,0,0.45)]"
+        viewBox="0 0 240 360"
+        className="w-60 sm:w-72 md:w-80 h-auto overflow-visible filter drop-shadow-[0_18px_40px_rgba(0,0,0,0.5)]"
         fill="none"
       >
         <defs>
-          {/* Glass body gradient */}
+          {/* Glass body subtle luminous gradient */}
           <linearGradient id="jarGlassBody" x1="0" y1="0" x2="1" y2="0">
-            <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.45" />
-            <stop offset="12%" stopColor="#F5EDFA" stopOpacity="0.18" />
-            <stop offset="50%" stopColor="#FFFFFF" stopOpacity="0.08" />
-            <stop offset="88%" stopColor="#EAE0F5" stopOpacity="0.22" />
-            <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0.4" />
+            <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.35" />
+            <stop offset="8%" stopColor="#F5EDFA" stopOpacity="0.12" />
+            <stop offset="50%" stopColor="#FFFFFF" stopOpacity="0.04" />
+            <stop offset="92%" stopColor="#EAE0F5" stopOpacity="0.16" />
+            <stop offset="100%" stopColor="#FFFFFF" stopOpacity="0.32" />
           </linearGradient>
 
           {/* Glass edge stroke */}
           <linearGradient id="glassEdge" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.85" />
-            <stop offset="50%" stopColor="#D8C2EE" stopOpacity="0.6" />
-            <stop offset="100%" stopColor="#B699D8" stopOpacity="0.75" />
+            <stop offset="0%" stopColor="#FFFFFF" stopOpacity="0.9" />
+            <stop offset="40%" stopColor="#E8D5F5" stopOpacity="0.65" />
+            <stop offset="100%" stopColor="#C4A8E0" stopOpacity="0.8" />
           </linearGradient>
 
           {/* Cork stopper texture gradient */}
           <linearGradient id="corkGrad" x1="0" y1="0" x2="0" y2="1">
-            <stop offset="0%" stopColor="#E2B47D" />
-            <stop offset="40%" stopColor="#D4A373" />
-            <stop offset="100%" stopColor="#B37D4A" />
+            <stop offset="0%" stopColor="#E8BE88" />
+            <stop offset="35%" stopColor="#D8A56E" />
+            <stop offset="100%" stopColor="#B37C46" />
           </linearGradient>
 
-          {/* Gold tag ribbon */}
-          <linearGradient id="tagGold" x1="0" y1="0" x2="1" y2="1">
-            <stop offset="0%" stopColor="#FFE89E" />
+          {/* Pastel Pink Ribbon gradient */}
+          <linearGradient id="pinkRibbonGrad" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#FFB8C9" />
+            <stop offset="50%" stopColor="#FF9FB2" />
+            <stop offset="100%" stopColor="#FF7A97" />
+          </linearGradient>
+
+          {/* Golden fairy lights wire */}
+          <linearGradient id="goldWire" x1="0" y1="0" x2="1" y2="1">
+            <stop offset="0%" stopColor="#FFEAA7" />
             <stop offset="50%" stopColor="#F6C15C" />
-            <stop offset="100%" stopColor="#D9882E" />
+            <stop offset="100%" stopColor="#E29E38" />
           </linearGradient>
 
-          {/* Firefly glow */}
-          <radialGradient id="fireflyGlow" cx="50%" cy="50%" r="50%">
+          {/* Star sparkle radiant glow */}
+          <radialGradient id="starHalo" cx="50%" cy="50%" r="50%">
             <stop offset="0%" stopColor="#FFFFFF" />
-            <stop offset="40%" stopColor="#FFF1B8" stopOpacity="0.9" />
+            <stop offset="30%" stopColor="#FFF2B2" stopOpacity="0.95" />
+            <stop offset="65%" stopColor="#F6C15C" stopOpacity="0.5" />
             <stop offset="100%" stopColor="#F6C15C" stopOpacity="0" />
+          </radialGradient>
+
+          {/* Fairy bulb glow */}
+          <radialGradient id="bulbGlow" cx="50%" cy="50%" r="50%">
+            <stop offset="0%" stopColor="#FFFFFF" />
+            <stop offset="40%" stopColor="#FFE082" stopOpacity="0.85" />
+            <stop offset="100%" stopColor="#FFA000" stopOpacity="0" />
           </radialGradient>
         </defs>
 
-        {/* ── Base floor shadow ── */}
-        <ellipse cx="120" cy="292" rx="72" ry="12" fill="#200B15" opacity="0.35" />
+        {/* ── Floor shadow beneath jar ── */}
+        <ellipse cx="120" cy="344" rx="76" ry="12" fill="#200B15" opacity="0.38" />
+
+        {/* ── OUTSIDE DOODLE SKETCH HEARTS (MATCHING REFERENCE IMAGE) ── */}
+        {/* Top-left chalk outline doodle heart */}
+        <motion.g
+          transform="translate(24, 76) rotate(-14)"
+          animate={{ y: [0, -5, 0], rotate: [-14, -10, -14] }}
+          transition={{ duration: 3.6, repeat: Infinity, ease: "easeInOut" }}
+        >
+          <HeartShape size={20} fill="none" stroke="#FFAEC0" strokeWidth={2.4} opacity={0.88} />
+        </motion.g>
+
+        {/* Mid-left filled soft pink doodle heart */}
+        <motion.g
+          transform="translate(28, 150) rotate(8)"
+          animate={{ y: [0, -6, 0], scale: [1, 1.1, 1] }}
+          transition={{ duration: 3.2, repeat: Infinity, ease: "easeInOut", delay: 0.7 }}
+        >
+          <HeartShape size={17} fill="#FFAEC0" opacity={0.82} />
+        </motion.g>
+
+        {/* Right white doodle outline heart */}
+        <motion.g
+          transform="translate(220, 240) rotate(12)"
+          animate={{ y: [0, -5, 0], rotate: [12, 16, 12] }}
+          transition={{ duration: 4.0, repeat: Infinity, ease: "easeInOut", delay: 1.1 }}
+        >
+          <HeartShape size={18} fill="none" stroke="#FFFFFF" strokeWidth={2} opacity={0.78} />
+        </motion.g>
+
+        {/* Bottom-right soft pink doodle heart */}
+        <motion.g
+          transform="translate(224, 298) rotate(-8)"
+          animate={{ y: [0, -6, 0], scale: [0.95, 1.08, 0.95] }}
+          transition={{ duration: 3.5, repeat: Infinity, ease: "easeInOut", delay: 0.3 }}
+        >
+          <HeartShape size={16} fill="#FFB3C6" opacity={0.8} />
+        </motion.g>
+
+        {/* Ambient doodle sparkles floating in air */}
+        <motion.text
+          x="34" y="120" fontSize="13" fill="#FFE082"
+          animate={{ opacity: [0.4, 1, 0.4], y: [120, 114, 120] }}
+          transition={{ duration: 2.8, repeat: Infinity, ease: "easeInOut" }}
+        >✦</motion.text>
+        <motion.text
+          x="212" y="180" fontSize="12" fill="#FFAEC0"
+          animate={{ opacity: [0.3, 0.9, 0.3], y: [180, 174, 180] }}
+          transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut", delay: 0.8 }}
+        >✦</motion.text>
 
         {/* ── CORK STOPPER ── */}
         {/* Cork bevel top */}
-        <ellipse cx="120" cy="22" rx="36" ry="6" fill="#ECC391" stroke="#B37D4A" strokeWidth="0.8" />
+        <ellipse cx="120" cy="38" rx="46" ry="9" fill="#ECC391" stroke="#B37D4A" strokeWidth="0.8" />
         {/* Cork body */}
         <path
-          d="M 84 22 L 87 48 C 87 50 95 53 120 53 C 145 53 153 50 153 48 L 156 22 Z"
+          d="M 74 38 L 78 64 C 78 66 94 68 120 68 C 146 68 162 66 162 64 L 166 38 Z"
           fill="url(#corkGrad)"
           stroke="#9C6B3A"
           strokeWidth="1"
         />
-        {/* Cork texture notches */}
-        <line x1="96" y1="28" x2="104" y2="29" stroke="#9C6B3A" strokeWidth="1" opacity="0.5" />
-        <line x1="134" y1="33" x2="144" y2="34" stroke="#9C6B3A" strokeWidth="1" opacity="0.5" />
-        <line x1="110" y1="41" x2="122" y2="42" stroke="#9C6B3A" strokeWidth="1" opacity="0.4" />
+        {/* Cork natural texture notches */}
+        <line x1="88" y1="45" x2="98" y2="46" stroke="#9C6B3A" strokeWidth="1" opacity="0.45" />
+        <line x1="136" y1="50" x2="148" y2="51" stroke="#9C6B3A" strokeWidth="1" opacity="0.45" />
+        <line x1="106" y1="56" x2="120" y2="57" stroke="#9C6B3A" strokeWidth="1" opacity="0.4" />
 
         {/* ── GLASS JAR INNER VOLUME ── */}
-        {/* Main curved apothecary silhouette */}
         <path
-          d="M 82 52 
-             C 74 52 70 56 68 64
-             C 66 72 70 82 66 94
-             C 58 112 36 122 36 148
-             L 36 254
-             C 36 280 62 288 120 288
-             C 178 288 204 280 204 254
-             L 204 148
-             C 204 122 182 112 174 94
-             C 170 82 174 72 172 64
-             C 170 56 166 52 158 52
+          d="M 75 76 
+             C 65 76 56 84 50 102
+             L 50 312
+             C 50 330 68 340 120 340
+             C 172 340 190 330 190 312
+             L 190 102
+             C 184 84 175 76 165 76
              Z"
           fill="url(#jarGlassBody)"
           stroke="url(#glassEdge)"
-          strokeWidth="2.2"
+          strokeWidth="2.4"
         />
 
         {/* Thick curved glass base */}
         <path
-          d="M 44 256 C 44 278 72 284 120 284 C 168 284 196 278 196 256 C 180 268 150 274 120 274 C 90 274 60 268 44 256 Z"
+          d="M 58 316 C 58 332 78 338 120 338 C 162 338 182 332 182 316 C 168 326 144 330 120 330 C 96 330 72 326 58 316 Z"
           fill="#FFFFFF"
-          opacity="0.28"
+          opacity="0.32"
         />
 
-        {/* ── FOLDED NOTES & ORIGAMI INSIDE THE JAR ── */}
+        {/* ── FOLDED LOVE NOTES PILED AT THE BOTTOM ── */}
         <g>
           {notes.map((n, i) => (
             <motion.g
-              key={i}
+              key={`note-${i}`}
               transform={`translate(${n.x}, ${n.y}) rotate(${n.rot})`}
               initial={{ scale: 0.9 }}
               animate={{ scale: 1 }}
-              transition={{ delay: i * 0.05 }}
+              transition={{ delay: i * 0.04 }}
             >
-              {/* Folded paper rectangle */}
+              {/* Folded paper note */}
               <rect
-                x="-14"
-                y="-9"
-                width="28"
-                height="18"
+                x={-n.w / 2}
+                y={-n.h / 2}
+                width={n.w}
+                height={n.h}
                 rx="3"
                 fill={n.color}
                 stroke={n.stroke}
-                strokeWidth="1.2"
-                filter="drop-shadow(0 2px 4px rgba(0,0,0,0.15))"
+                strokeWidth="1.1"
+                filter="drop-shadow(0 2px 4px rgba(0,0,0,0.18))"
               />
-              {/* Envelope flap / folded lines */}
+              {/* Envelope flap or paper crease lines */}
               {n.type === "env" ? (
                 <>
                   <path
-                    d="M -14 -9 L 0 2 L 14 -9"
+                    d={`M ${-n.w / 2} ${-n.h / 2} L 0 2 L ${n.w / 2} ${-n.h / 2}`}
                     stroke={n.stroke}
-                    strokeWidth="1"
+                    strokeWidth="0.9"
                     fill="none"
-                    opacity="0.8"
+                    opacity="0.85"
                   />
                   {/* Tiny heart sticker seal on envelope */}
                   <circle cx="0" cy="2" r="2.2" fill="#E17497" />
                 </>
               ) : (
                 <>
-                  <line x1="-9" y1="-3" x2="9" y2="-3" stroke={n.stroke} strokeWidth="1" opacity="0.6" />
-                  <line x1="-9" y1="2" x2="6" y2="2" stroke={n.stroke} strokeWidth="1" opacity="0.6" />
+                  <line x1={-n.w / 2 + 5} y1="-3" x2={n.w / 2 - 5} y2="-3" stroke={n.stroke} strokeWidth="0.9" opacity="0.6" />
+                  <line x1={-n.w / 2 + 5} y1="3" x2={n.w / 2 - 8} y2="3" stroke={n.stroke} strokeWidth="0.9" opacity="0.6" />
                 </>
               )}
             </motion.g>
           ))}
         </g>
 
-        {/* ── MAGIC GLOWING FIREFLIES / SPARKLES INSIDE GLASS ── */}
-        {fireflies.map((f, i) => (
+        {/* ── DELICATE GOLDEN FAIRY LIGHT WIRE (SPIRALING DOWN) ── */}
+        <path
+          d="M 115 88 Q 80 106 86 132 Q 94 158 152 142 Q 185 130 172 170 Q 160 205 106 200 Q 68 198 82 245 Q 96 280 148 268 Q 182 258 162 298 Q 146 322 108 325"
+          stroke="url(#goldWire)"
+          strokeWidth="1.3"
+          strokeLinecap="round"
+          fill="none"
+          opacity="0.9"
+        />
+
+        {/* ── BRIGHT SPARKLING 4-POINT STAR GLINTS (✦) ── */}
+        <StarSparkle cx={86}  cy={132} size={17} delay={0} />
+        <StarSparkle cx={172} cy={170} size={20} delay={0.6} />
+        <StarSparkle cx={106} cy={200} size={16} delay={1.2} />
+        <StarSparkle cx={148} cy={268} size={18} delay={0.3} />
+        <StarSparkle cx={162} cy={298} size={19} delay={0.9} />
+
+        {/* ── WARM GLOWING FAIRY BULBS ── */}
+        <FairyBulb cx={115} cy={88}  delay={0.2} size={3} />
+        <FairyBulb cx={124} cy={146} delay={0.8} size={3.2} />
+        <FairyBulb cx={178} cy={140} delay={1.4} size={2.8} />
+        <FairyBulb cx={140} cy={186} delay={0.5} size={3} />
+        <FairyBulb cx={76}  cy={224} delay={1.0} size={3.2} />
+        <FairyBulb cx={114} cy={256} delay={0.7} size={3.4} />
+        <FairyBulb cx={94}  cy={310} delay={1.3} size={3.2} />
+        <FairyBulb cx={138} cy={322} delay={0.4} size={3.5} />
+
+        {/* ── FLOATING PASTEL HEARTS INSIDE THE JAR ── */}
+        {floatingHearts.map((h, i) => (
           <motion.g
-            key={`ff-${i}`}
+            key={`fh-${i}`}
+            transform={`translate(${h.cx}, ${h.cy}) rotate(${h.rot})`}
             animate={{
-              y: [0, -8, 0],
-              x: [0, i % 2 === 0 ? 4 : -4, 0],
+              y: [0, -7, 0],
+              rotate: [h.rot - 3, h.rot + 3, h.rot - 3],
+              scale: [1, 1.07, 1],
             }}
             transition={{
-              duration: f.dur,
+              duration: 3.2 + (i % 3) * 0.4,
               repeat: Infinity,
               ease: "easeInOut",
-              delay: f.delay,
+              delay: h.delay,
             }}
           >
-            {/* Halo */}
-            <circle cx={f.cx} cy={f.cy} r={f.r * 2.8} fill="url(#fireflyGlow)" opacity="0.75" />
-            {/* Core */}
-            <circle cx={f.cx} cy={f.cy} r={f.r} fill="#FFFFFF" />
+            <g filter="drop-shadow(0 2px 6px rgba(255,140,170,0.45))">
+              <HeartShape size={h.size} fill={h.color} />
+            </g>
           </motion.g>
         ))}
+
+        {/* ── GLASS HIGHLIGHTS (GLOSSY REFLECTIONS) ── */}
+        {/* Left bright vertical highlight streak */}
+        <path
+          d="M 57 106 L 57 312 C 57 322 66 328 82 332"
+          stroke="#FFFFFF"
+          strokeWidth="4"
+          strokeLinecap="round"
+          opacity="0.65"
+        />
+        {/* Left thin secondary reflection streak */}
+        <path
+          d="M 64 115 L 64 295"
+          stroke="#FFFFFF"
+          strokeWidth="1.5"
+          strokeLinecap="round"
+          opacity="0.4"
+        />
+        {/* Right rim highlight streak */}
+        <path
+          d="M 183 108 L 183 310"
+          stroke="#FFFFFF"
+          strokeWidth="2.5"
+          strokeLinecap="round"
+          opacity="0.45"
+        />
+        {/* Curved bottom glass base shine */}
+        <path
+          d="M 75 334 Q 120 338 165 334"
+          stroke="#FFFFFF"
+          strokeWidth="2.2"
+          strokeLinecap="round"
+          opacity="0.5"
+        />
 
         {/* ── GLASS RIM & LIP DETAIL ── */}
         <ellipse
           cx="120"
-          cy="52"
-          rx="40"
+          cy="74"
+          rx="44"
           ry="7"
           fill="none"
           stroke="#FFFFFF"
-          strokeWidth="2.4"
+          strokeWidth="2.2"
           opacity="0.9"
         />
         <ellipse
           cx="120"
-          cy="54"
-          rx="38"
+          cy="76"
+          rx="42"
           ry="6"
           fill="#D8C2EE"
-          opacity="0.25"
+          opacity="0.2"
         />
 
-        {/* ── TWINE & HANGING TAG TIED AROUND NECK ── */}
+        {/* ── PASTEL PINK SATIN RIBBON AROUND NECK ── */}
+        <rect
+          x="75"
+          y="64"
+          width="90"
+          height="12"
+          rx="2"
+          fill="url(#pinkRibbonGrad)"
+          stroke="#FF7597"
+          strokeWidth="0.75"
+          filter="drop-shadow(0 2px 4px rgba(255,100,140,0.3))"
+        />
+        {/* Ribbon shine highlight */}
+        <line x1="77" y1="67" x2="163" y2="67" stroke="#FFF0F4" strokeWidth="1.2" opacity="0.7" />
+
+        {/* ── PASTEL PINK RIBBON BOW (ON RIGHT SIDE) ── */}
+        {/* Left loop of bow */}
         <path
-          d="M 72 68 Q 120 74 168 68"
-          stroke="#8C6239"
-          strokeWidth="2"
-          fill="none"
+          d="M 166 70 C 158 64 150 56 156 52 C 162 48 168 58 166 70 Z"
+          fill="url(#pinkRibbonGrad)"
+          stroke="#FF7597"
+          strokeWidth="0.8"
+        />
+        {/* Right loop of bow */}
+        <path
+          d="M 166 70 C 174 62 184 56 188 62 C 192 68 180 74 166 70 Z"
+          fill="url(#pinkRibbonGrad)"
+          stroke="#FF7597"
+          strokeWidth="0.8"
+        />
+        {/* Bow knot */}
+        <ellipse cx="166" cy="70" rx="4.5" ry="5" fill="#FF7096" stroke="#E0577D" strokeWidth="0.8" />
+        <ellipse cx="165" cy="68" rx="2" ry="1.5" fill="#FFF0F5" opacity="0.6" />
+
+        {/* Fluttering ribbon tails */}
+        <path
+          d="M 165 74 Q 170 88 175 106 L 179 104 Q 172 88 167 74 Z"
+          fill="url(#pinkRibbonGrad)"
+          stroke="#FF7597"
+          strokeWidth="0.6"
         />
         <path
-          d="M 74 71 Q 120 77 166 71"
-          stroke="#B3804D"
-          strokeWidth="1.5"
-          fill="none"
+          d="M 167 74 Q 176 86 186 100 L 190 98 Q 178 85 169 74 Z"
+          fill="url(#pinkRibbonGrad)"
+          stroke="#FF7597"
+          strokeWidth="0.6"
         />
-        {/* Tag string dropping from neck to tag */}
+
+        {/* ── DANGLING GIFT TAG WITH PINK HEART ── */}
+        {/* Tag hanging thread */}
         <path
-          d="M 142 70 Q 150 82 148 94"
-          stroke="#8C6239"
-          strokeWidth="1.5"
+          d="M 168 73 Q 175 82 186 90"
+          stroke="#FF7597"
+          strokeWidth="1.2"
           fill="none"
         />
-        {/* Little heart parchment tag */}
-        <g transform="translate(136, 94) rotate(12)">
-          <rect
-            x="0"
-            y="0"
-            width="26"
-            height="18"
-            rx="4"
-            fill="#FFF7E6"
-            stroke="#D4A373"
-            strokeWidth="1"
-            filter="drop-shadow(0 2px 6px rgba(0,0,0,0.3))"
+        {/* Tag paper body */}
+        <g transform="translate(182, 88) rotate(16)">
+          <path
+            d="M 5 0 L 17 0 L 22 6 L 22 32 C 22 34 20 36 18 36 L 4 36 C 2 36 0 34 0 32 L 0 6 Z"
+            fill="#FFFDF9"
+            stroke="#F0D5DD"
+            strokeWidth="0.8"
+            filter="drop-shadow(0 3px 8px rgba(0,0,0,0.35))"
           />
-          <circle cx="4" cy="4" r="1.5" fill="#8C6239" />
-          <text x="13" y="12" fontSize="8" textAnchor="middle" fill="#E17497" fontWeight="bold">
-            ♡ for u
-          </text>
+          {/* Tag hole */}
+          <circle cx="11" cy="5" r="1.8" fill="#F0C2CF" />
+          <circle cx="11" cy="5" r="1.2" fill="#E08B9E" />
+          {/* Sweet pink heart in center */}
+          <g transform="translate(11, 20)">
+            <HeartShape size={11} fill="#FF6B8B" />
+          </g>
         </g>
-
-        {/* ── GLASS LIGHT REFLECTIONS (Realistic curve highlights) ── */}
-        {/* Left long highlight curve */}
-        <path
-          d="M 46 145 L 46 245 C 46 258 54 268 70 274"
-          stroke="#FFFFFF"
-          strokeWidth="4.5"
-          strokeLinecap="round"
-          opacity="0.6"
-        />
-        {/* Left thin secondary reflection */}
-        <path
-          d="M 54 150 L 54 235"
-          stroke="#FFFFFF"
-          strokeWidth="1.6"
-          strokeLinecap="round"
-          opacity="0.4"
-        />
-        {/* Right shoulder glint */}
-        <path
-          d="M 194 145 L 194 245"
-          stroke="#FFFFFF"
-          strokeWidth="2.8"
-          strokeLinecap="round"
-          opacity="0.45"
-        />
-        {/* Top shoulder curve highlight */}
-        <path
-          d="M 74 94 Q 100 86 120 86"
-          stroke="#FFFFFF"
-          strokeWidth="2"
-          strokeLinecap="round"
-          opacity="0.5"
-        />
       </svg>
     </div>
   );

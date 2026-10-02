@@ -244,15 +244,15 @@ export default function HomePage({ onRideAway }) {
           className="w-full h-full object-cover"
           style={{
             objectPosition: "32% 34%",
-            filter: "brightness(0.66) saturate(1.08) contrast(1.04)",
+            filter: "brightness(0.85) saturate(1.06) contrast(1.02)",
           }}
         />
-        {/* Soft luxury romantic vignette — softens harsh bricks while keeping her portrait glowing */}
+        {/* Soft luxury romantic vignette — softens harsh bricks while keeping her portrait radiant and clear */}
         <div
           className="absolute inset-0"
           style={{
             background:
-              "radial-gradient(ellipse at 35% 38%, rgba(255, 235, 220, 0.12) 0%, rgba(42, 16, 26, 0.58) 55%, rgba(18, 6, 12, 0.88) 100%)",
+              "radial-gradient(ellipse at 35% 36%, transparent 0%, rgba(35, 12, 22, 0.32) 60%, rgba(16, 5, 10, 0.75) 100%)",
           }}
         />
         {/* Warm ambient spotlight behind main content */}
@@ -260,14 +260,14 @@ export default function HomePage({ onRideAway }) {
           className="absolute inset-0 pointer-events-none"
           style={{
             background:
-              "radial-gradient(circle at 50% 50%, rgba(246, 193, 140, 0.18) 0%, rgba(225, 116, 151, 0.08) 45%, transparent 75%)",
+              "radial-gradient(circle at 50% 50%, rgba(246, 193, 140, 0.14) 0%, rgba(225, 116, 151, 0.06) 45%, transparent 75%)",
           }}
         />
         {/* Top/bottom smooth blended fades */}
         <div
-          className="absolute top-0 left-0 right-0 h-32 pointer-events-none"
+          className="absolute top-0 left-0 right-0 h-20 pointer-events-none"
           style={{
-            background: "linear-gradient(to bottom, rgba(20, 7, 13, 0.65), transparent)",
+            background: "linear-gradient(to bottom, rgba(20, 7, 13, 0.4), transparent)",
           }}
         />
         <div
@@ -288,7 +288,7 @@ export default function HomePage({ onRideAway }) {
 
       {/* ─── page content ─── */}
       <motion.div
-        className="relative z-10 flex flex-col items-center pt-8 sm:pt-24 pb-10"
+        className="relative z-10 flex flex-col items-center pt-4 sm:pt-10 pb-10"
         initial={{ opacity: 0 }}
         animate={{ opacity: 1 }}
         exit={{ opacity: 0 }}

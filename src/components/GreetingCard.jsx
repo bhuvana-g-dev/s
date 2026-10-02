@@ -10,43 +10,40 @@ export default function GreetingCard() {
 
   return (
     <motion.div
-      initial={{ opacity: 0, y: 30, scale: 0.96 }}
+      initial={{ opacity: 0, y: 20, scale: 0.98 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.9, ease: "easeOut" }}
-      className="relative z-10 rounded-[2rem] px-6 py-8 sm:px-12 sm:py-12 max-w-xl w-full mx-4 text-center"
+      className="relative z-10 px-4 py-3 sm:px-6 sm:py-5 max-w-xl w-full mx-auto text-center select-none"
       style={{
-        background: "rgba(25, 10, 18, 0.4)",
-        backdropFilter: "blur(12px)",
-        WebkitBackdropFilter: "blur(12px)",
-        border: "1px solid rgba(255, 235, 210, 0.22)",
-        boxShadow: "0 16px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15)",
+        background: "transparent",
+        backdropFilter: "none",
+        WebkitBackdropFilter: "none",
+        border: "none",
+        boxShadow: "none",
       }}
     >
-      <span className="absolute -top-3 -left-3 text-2xl animate-sparkle">✨</span>
-      <span className="absolute -bottom-3 -right-3 text-2xl animate-sparkle" style={{ animationDelay:"1s" }}>✨</span>
-
       {bday ? (
         <>
           <motion.p
             initial={{ scale: 0.8, opacity: 0 }} animate={{ scale: 1, opacity: 1 }}
             transition={{ delay: 0.2, type: "spring", stiffness: 120 }}
-            className="font-display text-4xl sm:text-5xl text-white mb-3 drop-shadow-[0_2px_8px_rgba(0,0,0,0.5)]"
+            className="font-display text-4xl sm:text-5xl text-white mb-2 drop-shadow-[0_2px_12px_rgba(0,0,0,0.85)]"
           >
             🎂 Happy Birthday ❤️
           </motion.p>
-          <p className="font-hand text-2xl sm:text-3xl text-white/90 mb-5 drop-shadow-[0_1px_4px_rgba(0,0,0,0.4)]">
+          <p className="font-hand text-2xl sm:text-3xl text-white/95 mb-4 drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)]">
             {formatDay(today)}, {formatDate(today)}
           </p>
         </>
       ) : (
         <>
-          <p className="font-hand text-2xl sm:text-3xl text-white/90 mb-1 drop-shadow-[0_1px_4px_rgba(0,0,0,0.4)]">
+          <p className="font-hand text-2xl sm:text-3xl text-white drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)] mb-0.5">
             {formatDay(today)}
           </p>
-          <p className="font-body text-sm sm:text-base tracking-widest uppercase text-white/55 mb-6">
+          <p className="font-body text-xs sm:text-sm tracking-[0.2em] uppercase text-white/80 mb-3 drop-shadow-[0_2px_6px_rgba(0,0,0,0.85)] font-medium">
             {formatDate(today)}
           </p>
-          <h1 className="font-display text-2xl sm:text-4xl text-white mb-4 sm:mb-6 drop-shadow-[0_2px_8px_rgba(0,0,0,0.45)]">
+          <h1 className="font-display text-2xl sm:text-4xl text-white mb-2 sm:mb-3 drop-shadow-[0_3px_12px_rgba(0,0,0,0.9)]">
             {greetingText} {emoji}
           </h1>
         </>
@@ -56,7 +53,7 @@ export default function GreetingCard() {
         key={message}
         initial={{ opacity: 0 }} animate={{ opacity: 1 }}
         transition={{ delay: 0.5, duration: 0.8 }}
-        className="font-body text-base sm:text-lg text-white/90 leading-relaxed max-w-md mx-auto drop-shadow-[0_1px_4px_rgba(0,0,0,0.35)]"
+        className="font-body text-base sm:text-lg text-white font-normal leading-relaxed max-w-md mx-auto drop-shadow-[0_2px_8px_rgba(0,0,0,0.85)]"
       >
         {message}
       </motion.p>
