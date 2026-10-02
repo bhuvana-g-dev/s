@@ -1,6 +1,7 @@
 import { useState, useEffect } from "react";
 import MadeWithLove from "../components/MadeWithLove";
 import { motion, AnimatePresence } from "framer-motion";
+import BirthdayCake from "../components/birthday-room/BirthdayCake";
 import {
   selvaSoloPhotos,
   togetherPhotos,
@@ -33,7 +34,6 @@ function FairyLights({ count = 16 }) {
 
 // ─── Ambient balloons + confetti ─────────────────────────────
 function AmbientParty() {
-  const balloonColors = ["#E17497","#F4B8CE","#CBB6EA","#F2A65A","#E8628C","#D9A857"];
   return (
     <div className="fixed inset-0 pointer-events-none overflow-hidden z-0">
       {Array.from({ length: 12 }, (_, i) => (
@@ -137,54 +137,7 @@ function SelvaSpotlight() {
   );
 }
 
-// ─── Birthday cake ───────────────────────────────────────────
-function Cake() {
-  const [stage, setStage] = useState("idle");
-  return (
-    <div className="flex flex-col items-center mt-6">
-      <motion.button
-        onClick={() => stage === "idle" && setStage("wishing")}
-        whileHover={{ scale: 1.04 }} whileTap={{ scale: 0.97 }}
-        className="focus:outline-none"
-      >
-        <svg viewBox="0 0 120 100" className="w-28 sm:w-36 h-auto">
-          {[28,46,64,82].map((x,i) => (
-            <g key={i}>
-              <rect x={x-2} y="4" width="4" height="16" fill="#F4B8CE"/>
-              {stage !== "blown" && (
-                <motion.circle cx={x} cy="2" r="3" fill="#F2A65A"
-                  animate={{ opacity:[0.6,1,0.6], scale:[0.9,1.1,0.9] }}
-                  transition={{ duration:1+i*0.1, repeat:Infinity }} />
-              )}
-            </g>
-          ))}
-          <rect x="22" y="20" width="76" height="22" rx="4" fill="#FBE1EB" stroke="#E17497" strokeWidth="1.5"/>
-          <rect x="8" y="42" width="104" height="36" rx="5" fill="#FFF8F0" stroke="#D9A857" strokeWidth="1.5"/>
-          {[20,40,60,80,100].map((x,i)=><circle key={i} cx={x} cy="42" r="3" fill="#E8628C" opacity="0.8"/>)}
-          <rect x="4" y="78" width="112" height="8" rx="3" fill="#D9A857"/>
-          <text x="38" y="62" fontSize="12" fill="#E17497">Happy Birthday!</text>
-        </svg>
-      </motion.button>
-      <AnimatePresence mode="wait">
-        {stage === "wishing" && (
-          <motion.div key="w" initial={{ opacity:0, y:8 }} animate={{ opacity:1, y:0 }} exit={{ opacity:0 }} className="mt-3 text-center">
-            <p className="font-hand text-xl text-white">{wishMessage}</p>
-            <button onClick={() => setStage("blown")}
-              className="mt-3 font-body text-sm px-5 py-2 rounded-full bg-gradient-to-r from-blush-deep to-lavender-deep text-white hover:opacity-90">
-              🕯️ Blow the Candles
-            </button>
-          </motion.div>
-        )}
-        {stage === "blown" && (
-          <motion.p key="bl" initial={{ opacity:0, y:8 }} animate={{ opacity:1, y:0 }}
-            className="mt-3 font-hand text-xl text-white text-center">
-            {wishLockedMsg}
-          </motion.p>
-        )}
-      </AnimatePresence>
-    </div>
-  );
-}
+
 
 // ─── Together photo Polaroid wall ────────────────────────────
 function TogetherWall({ onClickPhoto }) {
@@ -336,7 +289,7 @@ export default function BirthdaySurpriseRoom() {
             ✨ The Birthday Girl ✨
           </motion.p>
           <SelvaSpotlight />
-          <Cake />
+          <BirthdayCake wishMsg={wishMessage} wishLockedText={wishLockedMsg} />
         </div>
 
         {/* ── together photos wall ── */}
@@ -371,6 +324,7 @@ export default function BirthdaySurpriseRoom() {
           <PhotoViewer index={viewerIdx} onClose={() => setViewerIdx(null)} onNav={navViewer} />
         )}
       </AnimatePresence>
+      <MadeWithLove />
     </motion.div>
   );
 }
