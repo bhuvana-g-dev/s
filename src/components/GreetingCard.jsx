@@ -13,13 +13,13 @@ export default function GreetingCard() {
       initial={{ opacity: 0, y: 30, scale: 0.96 }}
       animate={{ opacity: 1, y: 0, scale: 1 }}
       transition={{ duration: 0.9, ease: "easeOut" }}
-      className="relative z-10 rounded-[2rem] px-5 py-7 sm:px-12 sm:py-14 max-w-xl w-full mx-4 text-center"
-           style={{
-        background: "transparent",
-        backdropFilter: "none",
-        WebkitBackdropFilter: "none",
-        border: "none",
-        boxShadow: "none",
+      className="relative z-10 rounded-[2rem] px-6 py-8 sm:px-12 sm:py-12 max-w-xl w-full mx-4 text-center"
+      style={{
+        background: "rgba(25, 10, 18, 0.4)",
+        backdropFilter: "blur(12px)",
+        WebkitBackdropFilter: "blur(12px)",
+        border: "1px solid rgba(255, 235, 210, 0.22)",
+        boxShadow: "0 16px 40px rgba(0, 0, 0, 0.4), inset 0 1px 0 rgba(255, 255, 255, 0.15)",
       }}
     >
       <span className="absolute -top-3 -left-3 text-2xl animate-sparkle">✨</span>

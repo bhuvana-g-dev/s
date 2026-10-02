@@ -1,5 +1,5 @@
 import MadeWithLove from "../components/MadeWithLove";
-import { motion } from "framer-motion";
+import { motion, AnimatePresence } from "framer-motion";
 import { useEffect, useRef } from "react";
 import AmbientAnimations from "../components/AmbientAnimations";
 import GreetingCard from "../components/GreetingCard";
@@ -97,45 +97,135 @@ function HeartRipples() {
 
 /* ── Floating photo strip along the bottom — our together photos ── */
 function FloatingPhotoStrip() {
+  const [selectedPhoto, setSelectedPhoto] = useState(null);
+
   const photos = [
-    { src: "/photos/us-1.jpg",  label: "us 🌻" },
-    { src: "/photos/us-3.jpg",  label: "25 Feb ❤️" },
-    { src: "/photos/us-6.jpg",  label: "together 💕" },
-    { src: "/photos/us-8.jpg",  label: "mirror 😂" },
-    { src: "/photos/us-10.jpg", label: "always 🦋" },
+    { src: "/photos/us-1.jpg",  label: "us 🌻", memory: "Every moment with you is precious" },
+    { src: "/photos/us-3.jpg",  label: "25 Feb ❤️", memory: "A day etched in my heart forever" },
+    { src: "/photos/us-6.jpg",  label: "together 💕", memory: "Wherever you are, that's where I belong" },
+    { src: "/photos/us-8.jpg",  label: "mirror 😂", memory: "Our silliest, most authentic laughs" },
+    { src: "/photos/us-10.jpg", label: "always 🦋", memory: "You and me, across every chapter" },
+  ];
+
+  const rotations = [-3.5, 2.5, -1.8, 3.2, -2.8];
+  const yOffsets = [6, -8, 10, -5, 8];
+  const tapeColors = [
+    "rgba(244, 184, 206, 0.75)",
+    "rgba(254, 215, 170, 0.75)",
+    "rgba(203, 182, 234, 0.75)",
+    "rgba(254, 240, 138, 0.75)",
+    "rgba(251, 207, 232, 0.75)",
   ];
 
   return (
-    <div className="relative z-10 w-full overflow-hidden mt-6 mb-2 px-2">
-      <div className="flex gap-3 sm:gap-4 justify-center flex-wrap">
+    <div className="relative z-10 w-full overflow-hidden mt-12 sm:mt-16 mb-4 px-4">
+      {/* Title */}
+      <div className="text-center mb-6 sm:mb-8">
+        <h3
+          className="font-cinzel text-xl sm:text-2xl font-bold tracking-[0.08em] text-white drop-shadow-[0_2px_10px_rgba(0,0,0,0.5)]"
+          style={{
+            background: "linear-gradient(180deg, #FFFFFF 0%, #FFF2DE 50%, #F6C88D 100%)",
+            WebkitBackgroundClip: "text",
+            WebkitTextFillColor: "transparent",
+          }}
+        >
+          Moments We'll Never Forget
+        </h3>
+        <p className="font-hand text-base sm:text-lg text-white/75 mt-1 drop-shadow-[0_1px_4px_rgba(0,0,0,0.4)]">
+          tap any polaroid to take a closer look... 📸✨
+        </p>
+      </div>
+
+      {/* Responsive, staggered organic gallery */}
+      <div className="flex gap-4 sm:gap-6 justify-center flex-wrap items-center max-w-6xl mx-auto py-2">
         {photos.map((p, i) => (
           <motion.div
             key={i}
-            initial={{ opacity: 0, y: 20 }}
+            initial={{ opacity: 0, y: 24 }}
             animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.4 + i * 0.1, duration: 0.6 }}
-            className="flex-shrink-0"
-            style={{ transform: `rotate(${(i % 2 === 0 ? 1 : -1) * (2 + i % 3)}deg)` }}
+            transition={{ delay: 0.35 + i * 0.1, duration: 0.65, ease: "easeOut" }}
+            whileHover={{ scale: 1.08, y: -12, rotate: 0, zIndex: 30 }}
+            whileTap={{ scale: 0.96 }}
+            onClick={() => setSelectedPhoto(p)}
+            className="flex-shrink-0 cursor-pointer select-none"
+            style={{
+              transform: `rotate(${rotations[i]}deg) translateY(${yOffsets[i]}px)`,
+            }}
           >
             {/* Polaroid frame */}
-            <div className="bg-white p-1.5 pb-5 shadow-[0_4px_16px_rgba(0,0,0,0.25)] rounded-sm w-20 sm:w-24">
-              <div className="w-full aspect-square overflow-hidden bg-blush-light">
+            <div className="relative bg-[#FFFDF9] p-2.5 sm:p-3 pb-7 sm:pb-9 shadow-[0_10px_30px_rgba(0,0,0,0.35)] hover:shadow-[0_18px_45px_rgba(0,0,0,0.5)] transition-shadow rounded-sm w-36 sm:w-44 md:w-48 border border-white/40">
+              {/* Decorative washi tape at top */}
+              <div
+                className="absolute -top-3 left-1/2 -translate-x-1/2 w-11 sm:w-14 h-4 sm:h-5 rounded-xs shadow-xs pointer-events-none"
+                style={{
+                  backgroundColor: tapeColors[i % tapeColors.length],
+                  transform: `translateX(-50%) rotate(${i % 2 === 0 ? -2.5 : 2.5}deg)`,
+                }}
+              />
+
+              {/* Photo Image */}
+              <div className="w-full aspect-[4/3] sm:aspect-square overflow-hidden bg-blush-light/50 rounded-xs shadow-inner">
                 <img
                   src={p.src}
                   alt={p.label}
                   loading="lazy"
                   decoding="async"
-                  className="w-full h-full object-cover object-top"
+                  className="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105"
                 />
               </div>
-              <p className="font-hand text-[9px] sm:text-[10px] text-ink/60 text-center mt-1 truncate px-0.5">
+
+              {/* Handwritten caption */}
+              <p className="font-hand text-base sm:text-lg text-ink/80 text-center mt-2.5 font-bold truncate px-1">
                 {p.label}
               </p>
             </div>
           </motion.div>
         ))}
       </div>
-          <MadeWithLove />
+
+      {/* ── Photo Lightbox Modal on Click ── */}
+      <AnimatePresence>
+        {selectedPhoto && (
+          <motion.div
+            className="fixed inset-0 z-50 flex items-center justify-center bg-black/75 backdrop-blur-md p-4"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            exit={{ opacity: 0 }}
+            onClick={() => setSelectedPhoto(null)}
+          >
+            <motion.div
+              initial={{ scale: 0.8, y: 20 }}
+              animate={{ scale: 1, y: 0 }}
+              exit={{ scale: 0.8, y: 20 }}
+              onClick={(e) => e.stopPropagation()}
+              className="relative bg-white p-3 sm:p-5 pb-8 sm:pb-10 rounded-2xl max-w-sm sm:max-w-md w-full shadow-2xl text-center border border-white/30"
+            >
+              <button
+                onClick={() => setSelectedPhoto(null)}
+                className="absolute top-3 right-3 w-8 h-8 rounded-full bg-black/10 hover:bg-black/20 flex items-center justify-center text-ink text-base transition-colors"
+                aria-label="Close photo"
+              >
+                ✕
+              </button>
+              <div className="w-full aspect-square overflow-hidden rounded-xl bg-blush-light mb-4 shadow-sm">
+                <img
+                  src={selectedPhoto.src}
+                  alt={selectedPhoto.label}
+                  className="w-full h-full object-cover object-top"
+                />
+              </div>
+              <p className="font-hand text-2xl sm:text-3xl text-ink font-bold">
+                {selectedPhoto.label}
+              </p>
+              <p className="font-body text-xs sm:text-sm text-ink/65 mt-1.5 px-2">
+                {selectedPhoto.memory}
+              </p>
+            </motion.div>
+          </motion.div>
+        )}
+      </AnimatePresence>
+
+      <MadeWithLove />
     </div>
   );
 }
@@ -146,29 +236,46 @@ export default function HomePage({ onRideAway }) {
   return (
     <div className="relative min-h-screen w-full overflow-x-hidden">
 
-      {/* ─── HER PHOTO — true fixed full-page background ─── */}
-      <div className="fixed inset-0 z-0">
+      {/* ─── HER PHOTO — enhanced fixed full-page background ─── */}
+      <div className="fixed inset-0 z-0 overflow-hidden">
         <img
           src="/photos/selva-jar-bg.jpg"
-          alt=""
+          alt="Selva"
           className="w-full h-full object-cover"
           style={{
-            objectPosition: "center 30%",
-            filter: "brightness(0.72) saturate(1.15)",
+            objectPosition: "32% 34%",
+            filter: "brightness(0.66) saturate(1.08) contrast(1.04)",
           }}
         />
-        {/* subtle edge vignette only — center stays bright */}
+        {/* Soft luxury romantic vignette — softens harsh bricks while keeping her portrait glowing */}
         <div
           className="absolute inset-0"
           style={{
-            background: "radial-gradient(ellipse at center, transparent 45%, rgba(40,15,25,0.55) 100%)",
+            background:
+              "radial-gradient(ellipse at 35% 38%, rgba(255, 235, 220, 0.12) 0%, rgba(42, 16, 26, 0.58) 55%, rgba(18, 6, 12, 0.88) 100%)",
           }}
         />
-        {/* very thin top/bottom page-blending fades */}
-        <div className="absolute top-0 left-0 right-0 h-24 pointer-events-none"
-          style={{ background: "linear-gradient(to bottom, rgba(255,248,240,0.18), transparent)" }} />
-        <div className="absolute bottom-0 left-0 right-0 h-32 pointer-events-none"
-          style={{ background: "linear-gradient(to top, rgba(40,15,25,0.6), transparent)" }} />
+        {/* Warm ambient spotlight behind main content */}
+        <div
+          className="absolute inset-0 pointer-events-none"
+          style={{
+            background:
+              "radial-gradient(circle at 50% 50%, rgba(246, 193, 140, 0.18) 0%, rgba(225, 116, 151, 0.08) 45%, transparent 75%)",
+          }}
+        />
+        {/* Top/bottom smooth blended fades */}
+        <div
+          className="absolute top-0 left-0 right-0 h-32 pointer-events-none"
+          style={{
+            background: "linear-gradient(to bottom, rgba(20, 7, 13, 0.65), transparent)",
+          }}
+        />
+        <div
+          className="absolute bottom-0 left-0 right-0 h-44 pointer-events-none"
+          style={{
+            background: "linear-gradient(to top, rgba(18, 6, 12, 0.88), transparent)",
+          }}
+        />
       </div>
 
       {/* ─── heart ripples (screen blend — don't dim photo) ─── */}
