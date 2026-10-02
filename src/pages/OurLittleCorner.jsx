@@ -7,6 +7,7 @@ import Quiz from "../components/corner/Quiz";
 import CallLog from "../components/corner/CallLog";
 import StickerWall from "../components/corner/StickerWall";
 import SwingTransition from "../components/corner/SwingTransition";
+import CarouselHorse from "../components/corner/CarouselHorse";
 import { secretSwingSticker } from "../data/stickers";
 
 /** A little tilted polaroid used as background decor. */
@@ -84,11 +85,11 @@ export default function OurLittleCorner({ onSwingAway }) {
             aria-label="Go to next page"
           >
             <motion.span
-              className="text-4xl drop-shadow-sm"
-              animate={{ rotate: [0, -8, 8, 0] }}
+              className="drop-shadow-sm"
+              animate={{ rotate: [0, -4, 4, 0] }}
               transition={{ duration: 3, repeat: Infinity, ease: "easeInOut" }}
             >
-              {secretSwingSticker.icon}
+              <CarouselHorse />
             </motion.span>
             <span className="font-hand text-base text-lavender-deep">
               {secretSwingSticker.hoverText}
