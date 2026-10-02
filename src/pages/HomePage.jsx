@@ -1,6 +1,6 @@
 import MadeWithLove from "../components/MadeWithLove";
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect, useRef } from "react";
+import { useState, useEffect, useRef } from "react";
 import AmbientAnimations from "../components/AmbientAnimations";
 import GreetingCard from "../components/GreetingCard";
 import MemoryJar from "../components/MemoryJar";
