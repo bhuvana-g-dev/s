@@ -95,27 +95,62 @@ function HeartRipples() {
   );
 }
 
+/* ── Heart-shaped photo wall ──
+ * HEART_MASK: "X" = a photo tile, "." = empty. Edit it to reshape the heart.
+ * HEART_PHOTOS: photos are cycled through the tiles in order, so add more
+ * entries here and fewer photos will repeat. `thumb` is a 256px square crop
+ * (public/photos/heart/) used in the grid; `src` is the full photo for the lightbox. */
+const HEART_MASK = [
+  ".XXX.XXX.",
+  "XXXXXXXXX",
+  "XXXXXXXXX",
+  ".XXXXXXX.",
+  "..XXXXX..",
+  "...XXX...",
+  "....X....",
+];
+
+const SOFT_MEMORY = "Another little piece of our story";
+const HEART_PHOTOS = [
+  { id: "us-1",  label: "us 🌻",       memory: "Every moment with you is precious" },
+  { id: "selva-1", label: "you 🌸",    memory: SOFT_MEMORY },
+  { id: "us-3",  label: "25 Feb ❤️",   memory: "A day etched in my heart forever" },
+  { id: "us-6",  label: "together 💕", memory: "Wherever you are, that's where I belong" },
+  { id: "selva-2", label: "you 🌸",    memory: SOFT_MEMORY },
+  { id: "us-8",  label: "mirror 😂",   memory: "Our silliest, most authentic laughs" },
+  { id: "us-10", label: "always 🦋",   memory: "You and me, across every chapter" },
+  { id: "selva-3", label: "you 🌸",    memory: SOFT_MEMORY },
+  { id: "us-2",  label: "us 💕",       memory: SOFT_MEMORY },
+  { id: "us-4",  label: "us 💕",       memory: SOFT_MEMORY },
+  { id: "selva-4", label: "you 🌸",    memory: SOFT_MEMORY },
+  { id: "us-5",  label: "us 💕",       memory: SOFT_MEMORY },
+  { id: "us-7",  label: "us 💕",       memory: SOFT_MEMORY },
+  { id: "selva-solo-2", label: "you 🌸", memory: SOFT_MEMORY },
+  { id: "us-9",  label: "us 💕",       memory: SOFT_MEMORY },
+].map((p) => ({ ...p, src: `/photos/${p.id}.jpg`, thumb: `/photos/heart/${p.id}.jpg` }));
+
+// Build the tile list once: each "X" gets the next photo, a tiny tilt, and an
+// entrance delay that ripples outward from the middle of the heart.
+const HEART_CELLS = (() => {
+  const rows = HEART_MASK.length;
+  const cols = HEART_MASK[0].length;
+  let n = 0;
+  return HEART_MASK.flatMap((row, r) =>
+    [...row].map((ch, c) => {
+      const key = `${r}-${c}`;
+      if (ch !== "X") return { key, empty: true };
+      const photo = HEART_PHOTOS[n % HEART_PHOTOS.length];
+      const dist = Math.hypot(r - rows / 2.6, c - (cols - 1) / 2);
+      const cell = { key, photo, rot: ((n * 37) % 7) - 3, delay: 0.3 + dist * 0.07 };
+      n += 1;
+      return cell;
+    })
+  );
+})();
+
 /* ── Floating photo strip along the bottom — our together photos ── */
 function FloatingPhotoStrip() {
   const [selectedPhoto, setSelectedPhoto] = useState(null);
-
-  const photos = [
-    { src: "/photos/us-1.jpg",  label: "us 🌻", memory: "Every moment with you is precious" },
-    { src: "/photos/us-3.jpg",  label: "25 Feb ❤️", memory: "A day etched in my heart forever" },
-    { src: "/photos/us-6.jpg",  label: "together 💕", memory: "Wherever you are, that's where I belong" },
-    { src: "/photos/us-8.jpg",  label: "mirror 😂", memory: "Our silliest, most authentic laughs" },
-    { src: "/photos/us-10.jpg", label: "always 🦋", memory: "You and me, across every chapter" },
-  ];
-
-  const rotations = [-3.5, 2.5, -1.8, 3.2, -2.8];
-  const yOffsets = [6, -8, 10, -5, 8];
-  const tapeColors = [
-    "rgba(244, 184, 206, 0.75)",
-    "rgba(254, 215, 170, 0.75)",
-    "rgba(203, 182, 234, 0.75)",
-    "rgba(254, 240, 138, 0.75)",
-    "rgba(251, 207, 232, 0.75)",
-  ];
 
   return (
     <div className="relative z-10 w-full overflow-hidden mt-12 sm:mt-16 mb-4 px-4">
@@ -132,55 +167,51 @@ function FloatingPhotoStrip() {
           Moments We'll Never Forget
         </h3>
         <p className="font-hand text-base sm:text-lg text-white/75 mt-1 drop-shadow-[0_1px_4px_rgba(0,0,0,0.4)]">
-          tap any polaroid to take a closer look... 📸✨
+          tap any photo to take a closer look... 📸✨
         </p>
       </div>
 
-      {/* Responsive, staggered organic gallery */}
-      <div className="flex gap-4 sm:gap-6 justify-center flex-wrap items-center max-w-6xl mx-auto py-2">
-        {photos.map((p, i) => (
-          <motion.div
-            key={i}
-            initial={{ opacity: 0, y: 24 }}
-            animate={{ opacity: 1, y: 0 }}
-            transition={{ delay: 0.35 + i * 0.1, duration: 0.65, ease: "easeOut" }}
-            whileHover={{ scale: 1.08, y: -12, rotate: 0, zIndex: 30 }}
-            whileTap={{ scale: 0.96 }}
-            onClick={() => setSelectedPhoto(p)}
-            className="flex-shrink-0 cursor-pointer select-none"
-            style={{
-              transform: `rotate(${rotations[i]}deg) translateY(${yOffsets[i]}px)`,
-            }}
-          >
-            {/* Polaroid frame */}
-            <div className="relative bg-[#FFFDF9] p-2.5 sm:p-3 pb-7 sm:pb-9 shadow-[0_10px_30px_rgba(0,0,0,0.35)] hover:shadow-[0_18px_45px_rgba(0,0,0,0.5)] transition-shadow rounded-sm w-36 sm:w-44 md:w-48 border border-white/40">
-              {/* Decorative washi tape at top */}
-              <div
-                className="absolute -top-3 left-1/2 -translate-x-1/2 w-11 sm:w-14 h-4 sm:h-5 rounded-xs shadow-xs pointer-events-none"
-                style={{
-                  backgroundColor: tapeColors[i % tapeColors.length],
-                  transform: `translateX(-50%) rotate(${i % 2 === 0 ? -2.5 : 2.5}deg)`,
-                }}
-              />
-
-              {/* Photo Image */}
-              <div className="w-full aspect-[4/3] sm:aspect-square overflow-hidden bg-blush-light/50 rounded-xs shadow-inner">
+      {/* ── Heart-shaped photo wall ── */}
+      <div className="relative mx-auto py-3" style={{ width: "min(92vw, 640px)" }}>
+        {/* soft rosy glow behind the heart */}
+        <div
+          className="absolute inset-0 -z-10 pointer-events-none blur-3xl opacity-70"
+          style={{ background: "radial-gradient(circle at 50% 42%, rgba(244,120,160,0.55), transparent 65%)" }}
+        />
+        {/* gentle heartbeat */}
+        <motion.div
+          animate={{ scale: [1, 1.018, 1, 1.012, 1] }}
+          transition={{ duration: 2.6, repeat: Infinity, ease: "easeInOut" }}
+          className="grid grid-cols-9 gap-1 sm:gap-1.5"
+        >
+          {HEART_CELLS.map((cell) =>
+            cell.empty ? (
+              <div key={cell.key} />
+            ) : (
+              <motion.button
+                key={cell.key}
+                initial={{ opacity: 0, scale: 0.4 }}
+                animate={{ opacity: 1, scale: 1 }}
+                transition={{ delay: cell.delay, duration: 0.5, ease: "easeOut" }}
+                whileHover={{ scale: 1.35, rotate: 0, zIndex: 30 }}
+                whileTap={{ scale: 0.95 }}
+                onClick={() => setSelectedPhoto(cell.photo)}
+                aria-label={cell.photo.label}
+                className="relative aspect-square cursor-pointer select-none overflow-hidden rounded-[3px] border-[1.5px] sm:border-2 border-[#FFFDF9] shadow-[0_3px_10px_rgba(0,0,0,0.4)] bg-blush-light/50"
+                style={{ rotate: cell.rot }}
+              >
                 <img
-                  src={p.src}
-                  alt={p.label}
+                  src={cell.photo.thumb}
+                  alt={cell.photo.label}
                   loading="lazy"
                   decoding="async"
-                  className="w-full h-full object-cover object-top transition-transform duration-500 hover:scale-105"
+                  onError={(e) => { e.currentTarget.src = cell.photo.src; }}
+                  className="w-full h-full object-cover"
                 />
-              </div>
-
-              {/* Handwritten caption */}
-              <p className="font-hand text-base sm:text-lg text-ink/80 text-center mt-2.5 font-bold truncate px-1">
-                {p.label}
-              </p>
-            </div>
-          </motion.div>
-        ))}
+              </motion.button>
+            )
+          )}
+        </motion.div>
       </div>
 
       {/* ── Photo Lightbox Modal on Click ── */}
