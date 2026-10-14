@@ -17,6 +17,11 @@ export const selvaSoloPhotos = [
   { src: "/photos/selva-solo-1.jpg", caption: "My favourite person 🌻" },
   { src: "/photos/selva-solo-2.jpg", caption: "Look at you... effortlessly you. ❤️" },
   { src: "/photos/selva-solo-3.jpg", caption: "The smile that started everything. 🌸" },
+  { src: "/photos/selva-5.jpg", caption: "Grace and royalty in every frame ✨" },
+  { src: "/photos/selva-6.jpg", caption: "My sweet butterfly girl 🦋❤️" },
+  { src: "/photos/selva-7.jpg", caption: "Serenity looks so gorgeous on you 🌊" },
+  { src: "/photos/selva-8.jpg", caption: "Quiet peace and the softest eyes 🌸" },
+  { src: "/photos/selva-9.jpg", caption: "That radiant smile that melts my world 💖" },
 ];
 
 // Together photos — shown as floating Polaroids around the room

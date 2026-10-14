@@ -1,52 +1,62 @@
-// Placeholder gallery items for the cinematic memory page.
+// ============================================================
+// PAGE 3 — CINEMA OF MEMORIES
+// ============================================================
+// HOW TO ADD YOUR VIDEO:
+// 1. Put your video file inside:  public/videos/our-movie.mp4
+// 2. That's it! It will automatically play in the cinema gallery
+//    and theater modal.
+// ============================================================
+
 export const cinemaMemories = [
   {
     id: "m1",
     type: "photo",
-    src: null,
+    src: "/photos/us-1.jpg",
     caption: "The afternoon the light did something unreal.",
-    date: "March 2024",
+    date: "Golden Days",
     location: "Somewhere golden",
   },
   {
     id: "m2",
     type: "video",
-    src: null,
-    caption: "Thirty seconds of us being ridiculous.",
-    date: "April 2024",
-    location: null,
+    src: "/videos/our-movie.mp4",
+    poster: "/photos/us-3.jpg",
+    caption: "Our Special Movie — Every second with you is a treasure. 🎬❤️",
+    date: "Our Movie",
+    location: "Recorded with love",
   },
   {
     id: "m3",
     type: "photo",
-    src: null,
-    caption: "You, mid-laugh, not knowing I was watching.",
-    date: "June 2024",
-    location: "The old bookstore",
+    src: "/photos/selva-5.jpg",
+    caption: "Grace in every step you take... pure royalty. ✨",
+    date: "Precious Smiles",
+    location: "In my heart",
   },
   {
     id: "m4",
     type: "photo",
-    src: null,
-    caption: "A quiet evening that felt like a whole world.",
-    date: "August 2024",
-    location: "The rooftop",
+    src: "/photos/selva-6.jpg",
+    caption: "The prettiest girl with the sweetest butterfly soul. 🦋",
+    date: "Quiet Magic",
+    location: "Everywhere with you",
   },
   {
     id: "m5",
     type: "video",
-    src: null,
-    caption: "The drive we didn't want to end.",
-    date: "October 2024",
-    location: "The coastal road",
+    src: "/videos/memory-2.mp4",
+    poster: "/photos/selva-7.jpg",
+    caption: "Thirty seconds of us being completely ourselves. 🎥",
+    date: "Sweet Moments",
+    location: "The road ahead",
   },
   {
     id: "m6",
     type: "photo",
-    src: null,
-    caption: "This is the one I look at when I miss you.",
-    date: "December 2024",
-    location: null,
+    src: "/photos/selva-9.jpg",
+    caption: "That radiant red dress and the smile that lights up my universe. 💖",
+    date: "Forever Us",
+    location: "Sunflower",
   },
 ];
 

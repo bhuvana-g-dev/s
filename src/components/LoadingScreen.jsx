@@ -5,21 +5,49 @@ import { loadingMessages } from "../data/messages";
 export default function LoadingScreen({ onDone }) {
   const [index, setIndex] = useState(0);
 
+  // Preload critical home images in the background while loading
   useEffect(() => {
+    const preloadList = [
+      "/photos/selva-jar-bg.jpg",
+      "/photos/heart/us-1.jpg",
+      "/photos/heart/selva-1.jpg",
+      "/photos/heart/us-3.jpg",
+      "/photos/heart/selva-5.jpg",
+      "/photos/heart/selva-6.jpg",
+    ];
+    preloadList.forEach((src) => {
+      const img = new Image();
+      img.src = src;
+    });
+  }, []);
+
+  // Snappy message sequence — previously 6+ seconds, now smooth ~2 seconds
+  useEffect(() => {
+    const isReturning = Boolean(sessionStorage.getItem("app_has_visited"));
+    const stepDuration = isReturning ? 220 : 380;
+    const finalDuration = isReturning ? 350 : 550;
+
     if (index >= loadingMessages.length - 1) {
-      const finish = setTimeout(() => onDone(), 1400);
+      sessionStorage.setItem("app_has_visited", "true");
+      const finish = setTimeout(() => onDone(), finalDuration);
       return () => clearTimeout(finish);
     }
-    const step = setTimeout(() => setIndex((i) => i + 1), 950);
+    const step = setTimeout(() => setIndex((i) => i + 1), stepDuration);
     return () => clearTimeout(step);
   }, [index, onDone]);
 
+  const handleEnterNow = () => {
+    sessionStorage.setItem("app_has_visited", "true");
+    onDone();
+  };
+
   return (
     <motion.div
-      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-warm-gradient overflow-hidden"
+      onClick={handleEnterNow}
+      className="fixed inset-0 z-50 flex flex-col items-center justify-center bg-warm-gradient overflow-hidden cursor-pointer select-none"
       initial={{ opacity: 1 }}
       exit={{ opacity: 0, scale: 1.05 }}
-      transition={{ duration: 0.8, ease: "easeInOut" }}
+      transition={{ duration: 0.6, ease: "easeInOut" }}
     >
       {/* floating sparkles */}
       {Array.from({ length: 14 }).map((_, i) => (
@@ -81,6 +109,16 @@ export default function LoadingScreen({ onDone }) {
           />
         ))}
       </div>
+
+      {/* Quick skip / tap hint */}
+      <motion.p
+        initial={{ opacity: 0 }}
+        animate={{ opacity: 0.55 }}
+        whileHover={{ opacity: 1, scale: 1.05 }}
+        className="mt-6 text-xs sm:text-sm font-hand tracking-wider text-ink/60 hover:text-blush-deep px-3 py-1 rounded-full bg-white/40 border border-white/60 shadow-xs backdrop-blur-xs transition-all"
+      >
+        tap anywhere to enter ✨
+      </motion.p>
     </motion.div>
   );
 }

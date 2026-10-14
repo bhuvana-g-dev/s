@@ -1,6 +1,40 @@
 import { motion, AnimatePresence } from "framer-motion";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 import { cinemaMemories } from "../../data/cinemaMemories";
+
+function CinemaVideoPlayer({ src, poster }) {
+  const [hasError, setHasError] = useState(false);
+
+  if (hasError) {
+    return (
+      <div className="flex flex-col items-center justify-center p-6 text-center text-cinema-cream w-full h-full bg-black/40">
+        <span className="text-5xl mb-3">🎬</span>
+        <h4 className="font-display text-xl text-cinema-sunset mb-2">Ready For Your Video!</h4>
+        <p className="font-body text-sm text-cinema-cream/80 max-w-md">
+          Drop your video file into this path:
+        </p>
+        <code className="mt-2 px-3 py-1 bg-black/60 border border-cinema-sunset/40 rounded text-gold text-xs sm:text-sm font-mono select-all">
+          public{src}
+        </code>
+        <p className="font-hand text-base sm:text-lg text-cinema-cream/70 mt-3">
+          Save your video as <span className="text-gold">{src.replace("/videos/", "")}</span> inside the <span className="text-gold">public/videos</span> folder ✨
+        </p>
+      </div>
+    );
+  }
+
+  return (
+    <video
+      src={src}
+      controls
+      playsInline
+      autoPlay
+      poster={poster}
+      onError={() => setHasError(true)}
+      className="w-full h-full object-contain bg-black"
+    />
+  );
+}
 
 export default function MemoryViewer({ index, onClose, onNavigate }) {
   const memory = cinemaMemories[index];
@@ -69,9 +103,16 @@ export default function MemoryViewer({ index, onClose, onNavigate }) {
           <div className="w-full aspect-video sm:aspect-[16/10] bg-gradient-to-br from-cinema-plum via-cinema-dusk to-cinema-night rounded-lg overflow-hidden flex items-center justify-center shadow-cinemaGlow">
             {memory.src ? (
               isVideo ? (
-                <video src={memory.src} controls className="w-full h-full object-contain" />
+                <CinemaVideoPlayer
+                  src={memory.src}
+                  poster={memory.poster}
+                />
               ) : (
-                <img src={memory.src} alt={memory.caption} className="w-full h-full object-contain" />
+                <img
+                  src={memory.src}
+                  alt={memory.caption}
+                  className="w-full h-full object-contain"
+                />
               )
             ) : (
               <span className="text-6xl opacity-50">{isVideo ? "🎬" : "🌇"}</span>

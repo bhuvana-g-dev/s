@@ -26,16 +26,45 @@ function MemoryCard({ memory, index, onOpen }) {
         <div className="w-40 h-48 sm:w-48 sm:h-56 bg-gradient-to-br from-cinema-plum via-cinema-dusk to-cinema-night flex items-center justify-center overflow-hidden rounded-[2px] relative">
           {memory.src ? (
             isVideo ? (
-              <video src={memory.src} className="w-full h-full object-cover" muted />
+              <>
+                {memory.poster && (
+                  <img
+                    src={memory.poster}
+                    alt=""
+                    aria-hidden="true"
+                    loading="lazy"
+                    decoding="async"
+                    className="absolute inset-0 w-full h-full object-cover"
+                  />
+                )}
+                <video
+                  src={memory.src}
+                  poster={memory.poster}
+                  className="w-full h-full object-cover relative z-1"
+                  muted
+                  playsInline
+                  preload="metadata"
+                  onError={(e) => {
+                    // Hide broken video tag if file is not yet placed, showing poster
+                    e.currentTarget.style.display = "none";
+                  }}
+                />
+              </>
             ) : (
-              <img src={memory.src} alt={memory.caption} className="w-full h-full object-cover" />
+              <img
+                src={memory.src}
+                alt={memory.caption}
+                loading="lazy"
+                decoding="async"
+                className="w-full h-full object-cover"
+              />
             )
           ) : (
             <span className="text-4xl opacity-60">{isVideo ? "🎬" : "🌇"}</span>
           )}
 
           {isVideo && (
-            <span className="absolute bottom-2 right-2 w-8 h-8 rounded-full bg-cinema-ember/90 flex items-center justify-center text-cinema-cream text-sm">
+            <span className="absolute bottom-2 right-2 w-8 h-8 rounded-full bg-cinema-ember/90 shadow-md flex items-center justify-center text-cinema-cream text-xs z-10">
               ▶
             </span>
           )}

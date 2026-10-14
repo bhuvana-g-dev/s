@@ -16,7 +16,13 @@ function Polaroid({ photo, rotate = 0, size = "md" }) {
     >
       <div className="w-full h-full bg-gradient-to-br from-blush-light via-cream to-lavender-light flex items-center justify-center overflow-hidden rounded-[2px]">
         {photo.src ? (
-          <img src={photo.src} alt={photo.alt} className="w-full h-full object-cover" />
+          <img
+            src={photo.src}
+            alt={photo.alt}
+            loading="lazy"
+            decoding="async"
+            className="w-full h-full object-cover"
+          />
         ) : (
           <span className="text-3xl opacity-50">🌸</span>
         )}
