@@ -1,225 +1,460 @@
-import { useState } from "react";
+import { useState, useRef, useEffect, useCallback } from "react";
 import { motion, AnimatePresence } from "framer-motion";
-import { stickers } from "../../data/stickers";
+import { memoryCards } from "../../data/memoryBoard";
 
-/** Generic popup used for simple text/envelope/letter/qr actions. */
-function SimplePopup({ title, text, onClose }) {
+// ── Animated waveform bars that pulse when audio is playing ──────────────────
+function WaveformBars({ playing, color = "#E17497" }) {
+  const NUM_BARS = 28;
   return (
-    <motion.div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/30 backdrop-blur-sm px-4"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      onClick={onClose}
-    >
-      <motion.div
-        initial={{ scale: 0.7, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.8, opacity: 0 }}
-        onClick={(e) => e.stopPropagation()}
-        className="bg-cream rounded-2xl px-7 py-8 max-w-xs w-full text-center shadow-glass"
-      >
-        {title && <h4 className="font-display text-lg text-blush-deep mb-2">{title}</h4>}
-        {text && <p className="font-hand text-lg text-ink/70">{text}</p>}
-        <button
-          onClick={onClose}
-          className="mt-6 font-body text-sm px-5 py-2 rounded-full bg-blush-deep/90 text-white hover:bg-blush-deep transition-colors"
-        >
-          close
-        </button>
-      </motion.div>
-    </motion.div>
-  );
-}
-
-/** Vintage vinyl player for the 🎧 sticker, with a spinning record + play/pause. */
-function VinylPlayer({ sticker, onClose }) {
-  const [playing, setPlaying] = useState(false);
-  return (
-    <motion.div
-      className="fixed inset-0 z-50 flex items-center justify-center bg-ink/30 backdrop-blur-sm px-4"
-      initial={{ opacity: 0 }}
-      animate={{ opacity: 1 }}
-      exit={{ opacity: 0 }}
-      onClick={onClose}
-    >
-      <motion.div
-        initial={{ scale: 0.7, opacity: 0 }}
-        animate={{ scale: 1, opacity: 1 }}
-        exit={{ scale: 0.8, opacity: 0 }}
-        onClick={(e) => e.stopPropagation()}
-        className="bg-cream rounded-2xl px-7 py-8 max-w-xs w-full text-center shadow-glass"
-      >
-        <h4 className="font-display text-lg text-blush-deep mb-4">{sticker.title}</h4>
-        <motion.div
-          className="w-32 h-32 mx-auto rounded-full bg-cinema-night flex items-center justify-center relative"
-          animate={playing ? { rotate: 360 } : {}}
-          transition={{ duration: 3, repeat: playing ? Infinity : 0, ease: "linear" }}
-        >
-          <div className="w-10 h-10 rounded-full bg-cream" />
-          <div className="absolute inset-2 rounded-full border border-cinema-sunset/30" />
-        </motion.div>
-        <button
-          onClick={() => setPlaying((p) => !p)}
-          className="mt-5 font-body text-sm px-5 py-2 rounded-full bg-blush-deep/90 text-white hover:bg-blush-deep transition-colors mr-2"
-        >
-          {playing ? "⏸ Pause" : "▶ Play"}
-        </button>
-        {sticker.spotifyUrl && (
-          <a
-            href={sticker.spotifyUrl}
-            target="_blank"
-            rel="noreferrer"
-            className="inline-block mt-2 font-body text-xs text-lavender-deep underline"
-          >
-            open in Spotify
-          </a>
-        )}
-        <div>
-          <button
-            onClick={onClose}
-            className="mt-4 font-body text-xs text-ink/40 hover:text-ink/70 transition-colors"
-          >
-            close
-          </button>
-        </div>
-      </motion.div>
-    </motion.div>
-  );
-}
-
-/** Full-screen transient effects for hug / petals / butterflies / polaroid. */
-function EffectOverlay({ type, onDone }) {
-  const items = {
-    petals: { icon: "🌸", count: 16 },
-    butterflies: { icon: "🦋", count: 8 },
-    polaroid: { icon: "📷", count: 1 },
-  }[type];
-
-  if (type === "hug") {
-    return (
-      <motion.div
-        className="fixed inset-0 z-50 flex items-center justify-center bg-ink/20 backdrop-blur-sm"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: 1 }}
-        exit={{ opacity: 0 }}
-        onClick={onDone}
-      >
-        <motion.p
-          initial={{ scale: 0.5 }}
-          animate={{ scale: [0.5, 1.15, 1] }}
-          transition={{ duration: 0.6 }}
-          className="text-6xl"
-        >
-          🤗
-        </motion.p>
-      </motion.div>
-    );
-  }
-
-  if (type === "polaroid") {
-    return (
-      <motion.div
-        className="fixed inset-0 z-50 flex items-center justify-center bg-white"
-        initial={{ opacity: 0 }}
-        animate={{ opacity: [1, 0] }}
-        transition={{ duration: 0.6 }}
-        onAnimationComplete={onDone}
-      />
-    );
-  }
-
-  return (
-    <div className="fixed inset-0 z-50 pointer-events-none overflow-hidden" onAnimationEnd={onDone}>
-      {Array.from({ length: items.count }, (_, i) => i).map((i) => (
-        <motion.span
-          key={i}
-          className="absolute text-2xl"
-          style={{ left: `${(i * 17 + 5) % 100}%`, top: "-5%" }}
-          initial={{ y: -20, opacity: 0 }}
-          animate={{ y: "110vh", opacity: [0, 1, 1, 0], rotate: 180 }}
-          transition={{ duration: 4, delay: i * 0.1 }}
-          onAnimationComplete={i === items.count - 1 ? onDone : undefined}
-        >
-          {items.icon}
-        </motion.span>
-      ))}
+    <div className="flex items-end justify-center gap-[3px] h-10 w-full px-2">
+      {Array.from({ length: NUM_BARS }, (_, i) => {
+        const baseH = 18 + Math.sin((i / NUM_BARS) * Math.PI) * 22;
+        return (
+          <motion.span
+            key={i}
+            className="flex-shrink-0 rounded-full"
+            style={{
+              width: "3px",
+              height: `${baseH}px`,
+              backgroundColor: color,
+              opacity: 0.85,
+            }}
+            animate={
+              playing
+                ? {
+                    scaleY: [1, 1.8 + Math.random() * 1.2, 0.4 + Math.random() * 0.5, 1],
+                    opacity: [0.85, 1, 0.6, 0.85],
+                  }
+                : { scaleY: 1, opacity: 0.4 }
+            }
+            transition={{
+              duration: 0.55 + (i % 4) * 0.12,
+              repeat: playing ? Infinity : 0,
+              delay: (i % 7) * 0.07,
+              ease: "easeInOut",
+            }}
+          />
+        );
+      })}
     </div>
   );
 }
 
-function StickerButton({ sticker, index, onActivate }) {
+// ── Format seconds → mm:ss ────────────────────────────────────────────────────
+function fmt(s) {
+  if (!isFinite(s)) return "0:00";
+  const m = Math.floor(s / 60);
+  const sec = Math.floor(s % 60);
+  return `${m}:${sec.toString().padStart(2, "0")}`;
+}
+
+// ── Custom Audio Player modal ─────────────────────────────────────────────────
+function AudioPlayerModal({ card }) {
+  const [playing, setPlaying] = useState(false);
+  const [current, setCurrent] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [hasError, setHasError] = useState(false);
+  const audioRef = useRef(null);
+
+  const toggle = () => {
+    const a = audioRef.current;
+    if (!a) return;
+    if (playing) a.pause();
+    else a.play().catch(() => setHasError(true));
+    setPlaying((p) => !p);
+  };
+
+  const seek = (e) => {
+    const a = audioRef.current;
+    if (!a || !duration) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    const ratio = (e.clientX - rect.left) / rect.width;
+    a.currentTime = ratio * duration;
+  };
+
+  useEffect(() => {
+    const a = audioRef.current;
+    if (!a) return;
+    const onTime = () => setCurrent(a.currentTime);
+    const onMeta = () => setDuration(a.duration);
+    const onEnd = () => setPlaying(false);
+    const onErr = () => { setHasError(true); setPlaying(false); };
+    a.addEventListener("timeupdate", onTime);
+    a.addEventListener("loadedmetadata", onMeta);
+    a.addEventListener("ended", onEnd);
+    a.addEventListener("error", onErr);
+    return () => {
+      a.removeEventListener("timeupdate", onTime);
+      a.removeEventListener("loadedmetadata", onMeta);
+      a.removeEventListener("ended", onEnd);
+      a.removeEventListener("error", onErr);
+      a.pause();
+    };
+  }, []);
+
+  const progress = duration ? current / duration : 0;
+
+  return (
+    <div
+      className="relative rounded-3xl overflow-hidden p-6 sm:p-8"
+      style={{
+        background: `linear-gradient(145deg, ${card.bgFrom}, ${card.bgTo})`,
+      }}
+      onClick={(e) => e.stopPropagation()}
+    >
+      {/* Glow blob */}
+      <div
+        className="absolute -top-8 -right-8 w-40 h-40 rounded-full blur-3xl pointer-events-none"
+        style={{ background: card.glowRgba }}
+      />
+
+      {/* Badge */}
+      <span
+        className="inline-block text-[10px] font-bold tracking-widest px-3 py-1 rounded-full text-white mb-4"
+        style={{ background: card.glowColor }}
+      >
+        {card.badgeLabel}
+      </span>
+
+      {/* Title */}
+      <h3 className="font-display text-2xl sm:text-3xl text-ink mb-1">{card.title}</h3>
+      <p className="font-hand text-base text-ink/60 mb-6">{card.artistLabel}</p>
+
+      {/* Icon */}
+      <motion.div
+        className="text-6xl text-center mb-5"
+        animate={playing ? { scale: [1, 1.08, 1], rotate: [-3, 3, -3] } : { scale: 1 }}
+        transition={{ duration: 1.6, repeat: playing ? Infinity : 0, ease: "easeInOut" }}
+      >
+        {card.icon}
+      </motion.div>
+
+      {/* Waveform */}
+      <div className="mb-4">
+        <WaveformBars playing={playing} color={card.glowColor} />
+      </div>
+
+      {/* Seek bar */}
+      <div
+        className="relative w-full h-2 rounded-full cursor-pointer mb-2 overflow-hidden"
+        style={{ background: `${card.glowColor}30` }}
+        onClick={seek}
+      >
+        <motion.div
+          className="absolute inset-y-0 left-0 rounded-full"
+          style={{ background: card.glowColor }}
+          animate={{ width: `${progress * 100}%` }}
+          transition={{ duration: 0.15 }}
+        />
+      </div>
+
+      <div className="flex justify-between text-xs font-body text-ink/50 mb-6">
+        <span>{fmt(current)}</span>
+        <span>{fmt(duration)}</span>
+      </div>
+
+      {/* Error state */}
+      {hasError && (
+        <p className="text-center font-body text-sm text-ink/50 mb-4 rounded-xl p-3 bg-white/40 border border-white/60">
+          Place your audio file at{" "}
+          <code className="font-mono text-xs bg-black/10 px-1 rounded">{`public${card.src}`}</code>
+        </p>
+      )}
+
+      {/* Play / Pause */}
+      <div className="flex justify-center">
+        <motion.button
+          onClick={toggle}
+          whileHover={{ scale: 1.08 }}
+          whileTap={{ scale: 0.93 }}
+          className="w-16 h-16 rounded-full text-white text-2xl flex items-center justify-center shadow-lg"
+          style={{ background: card.glowColor }}
+          aria-label={playing ? "Pause" : "Play"}
+        >
+          {playing ? "⏸" : "▶"}
+        </motion.button>
+      </div>
+
+      <audio ref={audioRef} src={card.src} preload="metadata" />
+    </div>
+  );
+}
+
+// ── Spotify embed player modal ────────────────────────────────────────────────
+function SpotifyModal({ card }) {
+  return (
+    <div
+      className="relative rounded-3xl overflow-hidden p-6 sm:p-8"
+      style={{ background: `linear-gradient(145deg, #e8f5e9, #f0fff4)` }}
+      onClick={(e) => e.stopPropagation()}
+    >
+      <div
+        className="absolute -top-8 -right-8 w-40 h-40 rounded-full blur-3xl pointer-events-none"
+        style={{ background: "rgba(29,185,84,0.2)" }}
+      />
+
+      <span className="inline-block text-[10px] font-bold tracking-widest px-3 py-1 rounded-full text-white mb-4 bg-[#1DB954]">
+        SPOTIFY
+      </span>
+      <h3 className="font-display text-2xl sm:text-3xl text-ink mb-1">{card.title}</h3>
+      <p className="font-hand text-base text-ink/60 mb-5">{card.subtitle}</p>
+
+      <div className="rounded-2xl overflow-hidden shadow-soft">
+        <iframe
+          title={card.title}
+          src={`https://open.spotify.com/embed/track/${card.spotifyTrackId}?utm_source=generator&theme=0`}
+          width="100%"
+          height="152"
+          allow="autoplay; clipboard-write; encrypted-media; fullscreen; picture-in-picture"
+          loading="lazy"
+          style={{ border: "none" }}
+        />
+      </div>
+
+      <p className="mt-4 font-hand text-sm text-center text-ink/50">
+        this song lives in my head because of you 🎵
+      </p>
+    </div>
+  );
+}
+
+// ── Sweet letter / poem modal ─────────────────────────────────────────────────
+function LetterModal({ card }) {
+  return (
+    <div
+      className="relative rounded-3xl overflow-hidden"
+      style={{
+        background: "linear-gradient(145deg, #fffde7, #fff8e1)",
+        boxShadow: `0 0 40px ${card.glowRgba}`,
+      }}
+      onClick={(e) => e.stopPropagation()}
+    >
+      {/* wax seal top strip */}
+      <div
+        className="absolute top-0 left-0 right-0 h-1 rounded-t-3xl"
+        style={{ background: card.glowColor }}
+      />
+
+      <div className="p-7 sm:p-10">
+        {/* wax seal decoration */}
+        <div className="flex justify-center mb-6">
+          <motion.div
+            className="w-14 h-14 rounded-full flex items-center justify-center text-2xl text-white shadow-lg"
+            style={{ background: `radial-gradient(circle, ${card.glowColor}, ${card.glowColor}cc)` }}
+            animate={{ scale: [1, 1.05, 1] }}
+            transition={{ duration: 2.5, repeat: Infinity, ease: "easeInOut" }}
+          >
+            💌
+          </motion.div>
+        </div>
+
+        <h3 className="font-display text-xl sm:text-2xl text-center mb-1" style={{ color: card.glowColor }}>
+          {card.title}
+        </h3>
+        <p className="font-hand text-sm text-center text-ink/50 mb-7">{card.subtitle}</p>
+
+        {/* lined letter paper effect */}
+        <div
+          className="relative rounded-2xl px-6 py-7 sm:px-8 sm:py-8"
+          style={{
+            background:
+              "repeating-linear-gradient(to bottom, transparent, transparent 31px, rgba(217,168,87,0.15) 32px)",
+            minHeight: "200px",
+          }}
+        >
+          {card.poem.map((line, i) =>
+            line === "" ? (
+              <div key={i} className="h-5" />
+            ) : (
+              <motion.p
+                key={i}
+                initial={{ opacity: 0, x: -8 }}
+                animate={{ opacity: 1, x: 0 }}
+                transition={{ delay: 0.05 + i * 0.07, duration: 0.5 }}
+                className="font-hand text-lg sm:text-xl text-ink/80 leading-8"
+              >
+                {line}
+              </motion.p>
+            )
+          )}
+        </div>
+      </div>
+    </div>
+  );
+}
+
+// ── The unified modal overlay ─────────────────────────────────────────────────
+function MemoryModal({ card, onClose }) {
+  useEffect(() => {
+    const onKey = (e) => { if (e.key === "Escape") onClose(); };
+    window.addEventListener("keydown", onKey);
+    return () => window.removeEventListener("keydown", onKey);
+  }, [onClose]);
+
+  return (
+    <motion.div
+      className="fixed inset-0 z-50 flex items-center justify-center px-4 py-8"
+      style={{ background: "rgba(107,81,80,0.45)", backdropFilter: "blur(16px)" }}
+      initial={{ opacity: 0 }}
+      animate={{ opacity: 1 }}
+      exit={{ opacity: 0 }}
+      onClick={onClose}
+    >
+      <motion.div
+        className="relative w-full max-w-md"
+        initial={{ scale: 0.78, opacity: 0, y: 24 }}
+        animate={{ scale: 1, opacity: 1, y: 0 }}
+        exit={{ scale: 0.82, opacity: 0, y: 16 }}
+        transition={{ type: "spring", damping: 22, stiffness: 280 }}
+        onClick={(e) => e.stopPropagation()}
+      >
+        {/* Close button */}
+        <button
+          onClick={onClose}
+          aria-label="Close"
+          className="absolute -top-4 -right-4 z-10 w-9 h-9 rounded-full bg-white/90 shadow-soft border border-white/60 flex items-center justify-center text-ink/70 hover:text-ink hover:bg-white transition-all text-sm"
+        >
+          ✕
+        </button>
+
+        {card.type === "spotify" && <SpotifyModal card={card} onClose={onClose} />}
+        {card.type === "audio" && <AudioPlayerModal card={card} onClose={onClose} />}
+        {card.type === "letter" && <LetterModal card={card} onClose={onClose} />}
+      </motion.div>
+    </motion.div>
+  );
+}
+
+// ── Single Memory Card tile ───────────────────────────────────────────────────
+function MemoryCardTile({ card, index, onOpen }) {
   return (
     <motion.button
-      onClick={() => onActivate(sticker)}
-      animate={{ rotate: [0, -6, 6, -4, 0] }}
-      transition={{ duration: 3.5, repeat: Infinity, delay: (index % 6) * 0.3, ease: "easeInOut" }}
-      whileHover={{ scale: 1.15 }}
-      whileTap={{ scale: 0.9 }}
-      className="text-2xl sm:text-3xl select-none"
-      aria-label={sticker.title || sticker.action}
+      onClick={() => onOpen(card)}
+      initial={{ opacity: 0, y: 28, scale: 0.9 }}
+      animate={{ opacity: 1, y: 0, scale: 1 }}
+      transition={{ delay: index * 0.12, duration: 0.55, ease: "easeOut" }}
+      whileHover={{ y: -6, scale: 1.03 }}
+      whileTap={{ scale: 0.96 }}
+      aria-label={card.title}
+      className="group relative rounded-3xl text-left overflow-hidden focus:outline-none focus-visible:ring-2 focus-visible:ring-offset-2 w-full"
+      style={{
+        background: `linear-gradient(145deg, ${card.bgFrom}, ${card.bgTo})`,
+        border: `1px solid ${card.borderColor}`,
+        boxShadow: `0 8px 32px ${card.glowRgba}, 0 2px 8px rgba(107,81,80,0.08)`,
+        transition: "box-shadow 0.3s ease, transform 0.3s ease",
+      }}
     >
-      {sticker.icon}
+      {/* hover glow intensifier */}
+      <div
+        className="absolute inset-0 rounded-3xl opacity-0 group-hover:opacity-100 transition-opacity duration-300 pointer-events-none"
+        style={{
+          background: `radial-gradient(circle at 60% 30%, ${card.glowRgba}, transparent 70%)`,
+        }}
+      />
+
+      {/* frosted glass shimmer */}
+      <div
+        className="absolute top-0 left-0 right-0 h-1/2 rounded-t-3xl pointer-events-none opacity-40"
+        style={{
+          background: "linear-gradient(180deg, rgba(255,255,255,0.6) 0%, rgba(255,255,255,0) 100%)",
+        }}
+      />
+
+      <div className="relative p-5 sm:p-6">
+        {/* Badge top right */}
+        <span
+          className="absolute top-4 right-4 text-[9px] font-bold tracking-widest px-2.5 py-0.5 rounded-full text-white"
+          style={{ background: card.glowColor }}
+        >
+          {card.badgeLabel}
+        </span>
+
+        {/* Icon */}
+        <motion.div
+          className="text-5xl mb-4"
+          animate={{
+            y: [0, -4, 0],
+            rotate: [0, -3, 3, 0],
+          }}
+          transition={{
+            duration: 3.5 + index * 0.4,
+            repeat: Infinity,
+            ease: "easeInOut",
+          }}
+        >
+          {card.icon}
+        </motion.div>
+
+        {/* Title */}
+        <h4 className="font-display text-lg sm:text-xl text-ink leading-tight mb-1">
+          {card.title}
+        </h4>
+        <p className="font-hand text-sm text-ink/55 leading-snug mb-4">
+          {card.subtitle}
+        </p>
+
+        {/* Tap hint pill */}
+        <motion.div
+          className="inline-flex items-center gap-1.5 text-xs font-body font-semibold text-white px-3 py-1.5 rounded-full"
+          style={{ background: card.glowColor }}
+          animate={{ opacity: [0.8, 1, 0.8] }}
+          transition={{ duration: 2, repeat: Infinity }}
+        >
+          {card.hint}
+        </motion.div>
+      </div>
     </motion.button>
   );
 }
 
+// ── Main export ───────────────────────────────────────────────────────────────
 export default function StickerWall() {
-  const [modal, setModal] = useState(null); // { type: 'simple'|'player', sticker }
-  const [effect, setEffect] = useState(null);
+  const [openCard, setOpenCard] = useState(null);
 
-  const handleActivate = (sticker) => {
-    switch (sticker.action) {
-      case "hug":
-        setEffect("hug");
-        break;
-      case "petals":
-        setEffect("petals");
-        break;
-      case "butterflies":
-        setEffect("butterflies");
-        break;
-      case "polaroid":
-        setEffect("polaroid");
-        break;
-      case "player":
-        setModal({ type: "player", sticker });
-        break;
-      default:
-        setModal({ type: "simple", sticker });
-    }
-  };
+  const handleClose = useCallback(() => setOpenCard(null), []);
 
   return (
-    <div className="relative bg-[#FFFCF6] rounded-2xl p-4 sm:p-5 shadow-soft border border-beige-deep/30 overflow-hidden">
-      {/* washi tape */}
-      <div className="absolute -top-2 left-6 w-14 h-5 bg-lavender/60 rotate-[8deg]" />
-      <div className="absolute -top-2 right-6 w-14 h-5 bg-blush/60 rotate-[-8deg]" />
+    <>
+      <div className="relative">
+        {/* Section header */}
+        <div className="mb-5 text-center">
+          <motion.h3
+            className="font-display text-xl sm:text-2xl text-blush-deep mb-1"
+            initial={{ opacity: 0, y: -8 }}
+            animate={{ opacity: 1, y: 0 }}
+            transition={{ duration: 0.6 }}
+          >
+            Memory Board 💌
+          </motion.h3>
+          <motion.p
+            className="font-hand text-sm text-ink/50"
+            initial={{ opacity: 0 }}
+            animate={{ opacity: 1 }}
+            transition={{ delay: 0.3, duration: 0.6 }}
+          >
+            little things I saved just for you ✨
+          </motion.p>
+        </div>
 
-      <h3 className="font-display text-lg text-blush-deep text-center mb-1">
-        Sticker Surprise Wall
-      </h3>
-      <p className="font-hand text-sm text-ink/50 text-center mb-4">tap a sticker ✨</p>
-
-      <div className="grid grid-cols-5 sm:grid-cols-7 gap-3 sm:gap-4 place-items-center">
-        {stickers.map((s, i) => (
-          <StickerButton key={s.id} sticker={s} index={i} onActivate={handleActivate} />
-        ))}
+        {/* 2×2 card grid */}
+        <div className="grid grid-cols-1 sm:grid-cols-2 gap-4">
+          {memoryCards.map((card, i) => (
+            <MemoryCardTile
+              key={card.id}
+              card={card}
+              index={i}
+              onOpen={setOpenCard}
+            />
+          ))}
+        </div>
       </div>
 
+      {/* Modal overlay */}
       <AnimatePresence>
-        {modal?.type === "simple" && (
-          <SimplePopup
-            title={modal.sticker.title}
-            text={modal.sticker.text}
-            onClose={() => setModal(null)}
-          />
+        {openCard && (
+          <MemoryModal key={openCard.id} card={openCard} onClose={handleClose} />
         )}
-        {modal?.type === "player" && (
-          <VinylPlayer sticker={modal.sticker} onClose={() => setModal(null)} />
-        )}
-        {effect && <EffectOverlay type={effect} onDone={() => setEffect(null)} />}
       </AnimatePresence>
-    </div>
+    </>
   );
 }

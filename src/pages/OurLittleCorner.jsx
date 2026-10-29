@@ -68,9 +68,18 @@ export default function OurLittleCorner({ onSwingAway }) {
           {/* Right column */}
           <div className="flex flex-col gap-6 sm:gap-8">
             <CallLog />
-            <StickerWall />
           </div>
         </div>
+
+        {/* Memory Board — full-width spotlight below the grid */}
+        <motion.div
+          className="mt-8 sm:mt-10"
+          initial={{ opacity: 0, y: 24 }}
+          animate={{ opacity: 1, y: 0 }}
+          transition={{ delay: 0.4, duration: 0.7 }}
+        >
+          <StickerWall />
+        </motion.div>
 
         {/* next page — sits after all boxes, not inside any of them */}
         <div className="mt-12 sm:mt-16 flex flex-col items-center">
