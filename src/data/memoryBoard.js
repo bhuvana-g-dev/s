@@ -41,7 +41,7 @@ export const memoryCards = [
   {
     id: "suno-song",
     type: "audio",
-    icon: "🎼",
+    icon: "🎵",
     title: "A Song I Made For You",
     subtitle: "written from my heart, sung just for you ✨",
     hint: "tap to hear it 🎵",
@@ -52,9 +52,9 @@ export const memoryCards = [
     borderColor: "rgba(169, 141, 209, 0.3)",
     badgeColor: "#A98DD1",
     badgeLabel: "MY SONG",
-    // ▼ Place your Suno MP3 at public/audio/suno-song.mp3
     src: "/audio/suno-song.mp3",
-    artistLabel: "Made with Suno AI 🎵 just for you",
+    coverArt: "/audio/suno-cover.jpg",
+    artistLabel: "Made with Suno AI 🎵 — just for Selva ❤️",
   },
   {
     id: "voice-note",

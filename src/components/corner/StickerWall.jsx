@@ -96,83 +96,146 @@ function AudioPlayerModal({ card }) {
 
   return (
     <div
-      className="relative rounded-3xl overflow-hidden p-6 sm:p-8"
-      style={{
-        background: `linear-gradient(145deg, ${card.bgFrom}, ${card.bgTo})`,
-      }}
+      className="relative rounded-3xl overflow-hidden"
       onClick={(e) => e.stopPropagation()}
     >
-      {/* Glow blob */}
+      {/* Full blurred cover art as background */}
+      {card.coverArt && (
+        <div
+          className="absolute inset-0 bg-cover bg-center scale-110"
+          style={{
+            backgroundImage: `url(${card.coverArt})`,
+            filter: "blur(18px) brightness(0.35) saturate(1.4)",
+          }}
+        />
+      )}
+      {/* Color overlay if no cover art */}
+      {!card.coverArt && (
+        <div
+          className="absolute inset-0"
+          style={{ background: `linear-gradient(145deg, ${card.bgFrom}, ${card.bgTo})` }}
+        />
+      )}
+
+      {/* Top glow blob */}
       <div
-        className="absolute -top-8 -right-8 w-40 h-40 rounded-full blur-3xl pointer-events-none"
+        className="absolute -top-8 -right-8 w-48 h-48 rounded-full blur-3xl pointer-events-none opacity-60"
         style={{ background: card.glowRgba }}
       />
 
-      {/* Badge */}
-      <span
-        className="inline-block text-[10px] font-bold tracking-widest px-3 py-1 rounded-full text-white mb-4"
-        style={{ background: card.glowColor }}
-      >
-        {card.badgeLabel}
-      </span>
-
-      {/* Title */}
-      <h3 className="font-display text-2xl sm:text-3xl text-ink mb-1">{card.title}</h3>
-      <p className="font-hand text-base text-ink/60 mb-6">{card.artistLabel}</p>
-
-      {/* Icon */}
-      <motion.div
-        className="text-6xl text-center mb-5"
-        animate={playing ? { scale: [1, 1.08, 1], rotate: [-3, 3, -3] } : { scale: 1 }}
-        transition={{ duration: 1.6, repeat: playing ? Infinity : 0, ease: "easeInOut" }}
-      >
-        {card.icon}
-      </motion.div>
-
-      {/* Waveform */}
-      <div className="mb-4">
-        <WaveformBars playing={playing} color={card.glowColor} />
-      </div>
-
-      {/* Seek bar */}
-      <div
-        className="relative w-full h-2 rounded-full cursor-pointer mb-2 overflow-hidden"
-        style={{ background: `${card.glowColor}30` }}
-        onClick={seek}
-      >
-        <motion.div
-          className="absolute inset-y-0 left-0 rounded-full"
+      {/* Content */}
+      <div className="relative p-6 sm:p-8">
+        {/* Badge */}
+        <span
+          className="inline-block text-[10px] font-bold tracking-widest px-3 py-1 rounded-full text-white mb-5"
           style={{ background: card.glowColor }}
-          animate={{ width: `${progress * 100}%` }}
-          transition={{ duration: 0.15 }}
-        />
-      </div>
-
-      <div className="flex justify-between text-xs font-body text-ink/50 mb-6">
-        <span>{fmt(current)}</span>
-        <span>{fmt(duration)}</span>
-      </div>
-
-      {/* Error state */}
-      {hasError && (
-        <p className="text-center font-body text-sm text-ink/50 mb-4 rounded-xl p-3 bg-white/40 border border-white/60">
-          Place your audio file at{" "}
-          <code className="font-mono text-xs bg-black/10 px-1 rounded">{`public${card.src}`}</code>
-        </p>
-      )}
-
-      {/* Play / Pause */}
-      <div className="flex justify-center">
-        <motion.button
-          onClick={toggle}
-          whileHover={{ scale: 1.08 }}
-          whileTap={{ scale: 0.93 }}
-          className="w-16 h-16 rounded-full text-white text-2xl flex items-center justify-center shadow-lg"
-          style={{ background: card.glowColor }}
-          aria-label={playing ? "Pause" : "Play"}
         >
-          {playing ? "⏸" : "▶"}
-        </motion.button>
+          {card.badgeLabel}
+        </span>
+
+        {/* Spinning album cover / icon */}
+        <div className="flex justify-center mb-5">
+          <div className="relative">
+            {/* Vinyl disc shadow */}
+            <div
+              className="absolute inset-0 rounded-full blur-xl opacity-50 scale-90"
+              style={{ background: card.glowColor }}
+            />
+            <motion.div
+              className="relative w-36 h-36 sm:w-40 sm:h-40 rounded-full overflow-hidden border-4 border-white/20 shadow-2xl"
+              animate={playing ? { rotate: 360 } : { rotate: 0 }}
+              transition={{ duration: 5, repeat: playing ? Infinity : 0, ease: "linear" }}
+            >
+              {card.coverArt ? (
+                <img
+                  src={card.coverArt}
+                  alt="cover"
+                  className="w-full h-full object-cover"
+                />
+              ) : (
+                <div
+                  className="w-full h-full flex items-center justify-center text-5xl"
+                  style={{ background: `linear-gradient(135deg, ${card.bgFrom}, ${card.bgTo})` }}
+                >
+                  {card.icon}
+                </div>
+              )}
+              {/* Centre vinyl hole */}
+              <div className="absolute inset-0 flex items-center justify-center pointer-events-none">
+                <div className="w-5 h-5 rounded-full bg-white/90 border-2 border-white shadow-sm" />
+              </div>
+            </motion.div>
+          </div>
+        </div>
+
+        {/* Title + artist */}
+        <h3
+          className="font-display text-xl sm:text-2xl text-center mb-0.5"
+          style={{ color: card.coverArt ? "rgba(255,255,255,0.95)" : "#6B5150" }}
+        >
+          {card.title}
+        </h3>
+        <p
+          className="font-hand text-sm text-center mb-5"
+          style={{ color: card.coverArt ? "rgba(255,255,255,0.65)" : "rgba(107,81,80,0.6)" }}
+        >
+          {card.artistLabel}
+        </p>
+
+        {/* Waveform */}
+        <div className="mb-4">
+          <WaveformBars playing={playing} color={card.coverArt ? "rgba(255,255,255,0.8)" : card.glowColor} />
+        </div>
+
+        {/* Seek bar */}
+        <div
+          className="relative w-full h-2 rounded-full cursor-pointer mb-2 overflow-hidden"
+          style={{ background: card.coverArt ? "rgba(255,255,255,0.2)" : `${card.glowColor}30` }}
+          onClick={seek}
+        >
+          <motion.div
+            className="absolute inset-y-0 left-0 rounded-full"
+            style={{ background: card.coverArt ? "rgba(255,255,255,0.9)" : card.glowColor }}
+            animate={{ width: `${progress * 100}%` }}
+            transition={{ duration: 0.15 }}
+          />
+        </div>
+
+        <div
+          className="flex justify-between text-xs font-body mb-6"
+          style={{ color: card.coverArt ? "rgba(255,255,255,0.5)" : "rgba(107,81,80,0.5)" }}
+        >
+          <span>{fmt(current)}</span>
+          <span>{fmt(duration)}</span>
+        </div>
+
+        {/* Error state */}
+        {hasError && (
+          <p className="text-center font-body text-sm text-white/70 mb-4 rounded-xl p-3 bg-black/30 border border-white/20">
+            Place your audio file at{" "}
+            <code className="font-mono text-xs bg-black/30 px-1 rounded">{`public${card.src}`}</code>
+          </p>
+        )}
+
+        {/* Play / Pause */}
+        <div className="flex justify-center">
+          <motion.button
+            onClick={toggle}
+            whileHover={{ scale: 1.08 }}
+            whileTap={{ scale: 0.93 }}
+            className="w-16 h-16 rounded-full text-2xl flex items-center justify-center shadow-xl border-2 border-white/30"
+            style={{
+              background: card.coverArt
+                ? "rgba(255,255,255,0.2)"
+                : card.glowColor,
+              color: "white",
+              backdropFilter: "blur(10px)",
+            }}
+            aria-label={playing ? "Pause" : "Play"}
+          >
+            {playing ? "⏸" : "▶"}
+          </motion.button>
+        </div>
       </div>
 
       <audio ref={audioRef} src={card.src} preload="metadata" />
