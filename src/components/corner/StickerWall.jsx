@@ -102,9 +102,10 @@ function AudioPlayerModal({ card }) {
       {/* Full blurred cover art as background */}
       {card.coverArt && (
         <div
-          className="absolute inset-0 bg-cover bg-center scale-110"
+          className="absolute inset-0 bg-cover scale-110"
           style={{
             backgroundImage: `url(${card.coverArt})`,
+            backgroundPosition: card.facePosition ? card.facePosition.replace("center ", "") : "center top",
             filter: "blur(18px) brightness(0.35) saturate(1.4)",
           }}
         />
@@ -151,6 +152,7 @@ function AudioPlayerModal({ card }) {
                   src={card.coverArt}
                   alt="cover"
                   className="w-full h-full object-cover"
+                  style={{ objectPosition: card.facePosition || "center top" }}
                 />
               ) : (
                 <div

@@ -4,18 +4,15 @@
 //
 // How to add your files:
 //
-//  1. HER FAVOURITE SONG  ──  set spotifyTrackId to the track ID
-//     found at the end of any Spotify track URL:
-//     https://open.spotify.com/track/<TRACK_ID_HERE>
-//     e.g. "7j6Cb59M9yOq3aw4fmDzQj"
+//  1. HER FAVOURITE SONG  ──  save the audio file as:
+//     public/audio/fav-song.mp3
+//     Cover art: public/audio/fav-cover.jpg (already set)
 //
-//  2. YOUR SUNO SONG  ──  save your generated song as:
-//     public/audio/suno-song.mp3   (or .m4a / .wav)
-//     Then set src: "/audio/suno-song.mp3"
+//  2. YOUR SUNO SONG  ──  already placed at:
+//     public/audio/suno-song.mp3
 //
 //  3. YOUR VOICE NOTE  ──  save your recording as:
 //     public/audio/voice-note.mp3
-//     Then set src: "/audio/voice-note.mp3"
 //
 //  4. SURPRISE LETTER  ──  edit the `poem` array below.
 // ============================================================
@@ -23,20 +20,22 @@
 export const memoryCards = [
   {
     id: "fav-song",
-    type: "spotify",
+    type: "audio",
     icon: "💿",
     title: "Her Favourite Song",
-    subtitle: "the one that always makes me think of you",
-    hint: "tap to listen 🎵",
-    glowColor: "#1DB954",
-    glowRgba: "rgba(29, 185, 84, 0.35)",
-    bgFrom: "#e8f5e9",
-    bgTo: "#f0fff4",
-    borderColor: "rgba(29, 185, 84, 0.25)",
-    badgeColor: "#1DB954",
-    badgeLabel: "SPOTIFY",
-    // ▼ REPLACE THIS with the real Spotify track ID
-    spotifyTrackId: "7j6Cb59M9yOq3aw4fmDzQj",
+    subtitle: "the one that always makes me think of you 🎵",
+    hint: "tap to listen 💿",
+    glowColor: "#E17497",
+    glowRgba: "rgba(225, 116, 151, 0.4)",
+    bgFrom: "#fce4ec",
+    bgTo: "#fbe1eb",
+    borderColor: "rgba(225, 116, 151, 0.3)",
+    badgeColor: "#E17497",
+    badgeLabel: "HER SONG",
+    // ▼ Place at public/audio/fav-song.mp3
+    src: "/audio/fav-song.mp3",
+    coverArt: "/audio/fav-cover.jpg",
+    artistLabel: "Her favourite song 💗 played just for her",
   },
   {
     id: "suno-song",
