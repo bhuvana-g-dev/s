@@ -245,6 +245,357 @@ function AudioPlayerModal({ card }) {
   );
 }
 
+// ── Animated SVG Sunflower ────────────────────────────────────────────────────
+const PETAL_COUNT = 16;
+const POLLEN = Array.from({ length: 18 }, (_, i) => ({
+  id: i,
+  x: 30 + Math.sin(i * 1.9) * 55,
+  y: 30 + Math.cos(i * 2.3) * 55,
+  r: 2 + (i % 3),
+  delay: i * 0.18,
+  dur: 2.5 + (i % 4) * 0.4,
+}));
+
+function AnimatedSunflower({ playing, size = 220 }) {
+  const cx = size / 2, cy = size / 2;
+  const outerR = size * 0.34, innerR = size * 0.24;
+  const discR  = size * 0.175, innerDiscR = size * 0.115;
+  const petalW = size * 0.085, outerPetalH = size * 0.21, innerPetalH = size * 0.155;
+
+  return (
+    <svg width={size} height={size} viewBox={`0 0 ${size} ${size}`} overflow="visible">
+      <defs>
+        {/* outer petal */}
+        <radialGradient id="sfOuter" cx="50%" cy="30%" r="70%">
+          <stop offset="0%"   stopColor="#FFE44D" />
+          <stop offset="60%"  stopColor="#FFBF00" />
+          <stop offset="100%" stopColor="#E08800" />
+        </radialGradient>
+        {/* inner petal */}
+        <radialGradient id="sfInner" cx="50%" cy="30%" r="70%">
+          <stop offset="0%"   stopColor="#FFD700" />
+          <stop offset="100%" stopColor="#CC8800" />
+        </radialGradient>
+        {/* disc centre */}
+        <radialGradient id="sfDisc" cx="40%" cy="38%" r="65%">
+          <stop offset="0%"   stopColor="#7B4A0A" />
+          <stop offset="45%"  stopColor="#5C2F00" />
+          <stop offset="100%" stopColor="#3A1800" />
+        </radialGradient>
+        <radialGradient id="sfDiscInner" cx="40%" cy="38%" r="65%">
+          <stop offset="0%"   stopColor="#A0622A" />
+          <stop offset="100%" stopColor="#5C2F00" />
+        </radialGradient>
+        {/* glow filter */}
+        <filter id="sfGlow" x="-40%" y="-40%" width="180%" height="180%">
+          <feGaussianBlur stdDeviation="5" result="blur" />
+          <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
+        <filter id="sfPetalGlow" x="-20%" y="-20%" width="140%" height="140%">
+          <feGaussianBlur stdDeviation="2.5" result="blur" />
+          <feMerge><feMergeNode in="blur" /><feMergeNode in="SourceGraphic" /></feMerge>
+        </filter>
+        {/* seed dot pattern */}
+        <pattern id="seeds" x="0" y="0" width="6" height="6" patternUnits="userSpaceOnUse">
+          <circle cx="3" cy="3" r="1.3" fill="#7B4A0A" opacity="0.7" />
+        </pattern>
+      </defs>
+
+      {/* ── Outer glow halo ── */}
+      <motion.circle
+        cx={cx} cy={cy}
+        r={outerR + 14}
+        fill="rgba(255,215,0,0.12)"
+        animate={{ r: [outerR + 12, outerR + 22, outerR + 12], opacity: [0.15, 0.3, 0.15] }}
+        transition={{ duration: 2.4, repeat: Infinity, ease: "easeInOut" }}
+      />
+
+      {/* ── Outer petals (16) ── */}
+      {Array.from({ length: PETAL_COUNT }, (_, i) => {
+        const angle = (i / PETAL_COUNT) * 360;
+        return (
+          <g key={`op-${i}`} transform={`rotate(${angle}, ${cx}, ${cy})`}>
+            <motion.ellipse
+              cx={cx}
+              cy={cy - outerR}
+              rx={petalW}
+              ry={outerPetalH}
+              fill="url(#sfOuter)"
+              filter="url(#sfPetalGlow)"
+              style={{ transformOrigin: `${cx}px ${cy}px` }}
+              animate={{
+                scaleX: [1, playing ? 1.12 : 1.04, 1],
+                scaleY: [1, playing ? 1.08 : 1.03, 1],
+                rotate: [0, (i % 2 === 0 ? 2 : -2), 0],
+              }}
+              transition={{
+                duration: 1.8 + (i % 5) * 0.22,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: (i * 0.11) % 1.2,
+              }}
+            />
+          </g>
+        );
+      })}
+
+      {/* ── Inner petals (8, offset 11.25°) ── */}
+      {Array.from({ length: 8 }, (_, i) => {
+        const angle = (i / 8) * 360 + 11.25;
+        return (
+          <g key={`ip-${i}`} transform={`rotate(${angle}, ${cx}, ${cy})`}>
+            <motion.ellipse
+              cx={cx}
+              cy={cy - innerR}
+              rx={petalW * 0.7}
+              ry={innerPetalH}
+              fill="url(#sfInner)"
+              style={{ transformOrigin: `${cx}px ${cy}px` }}
+              animate={{
+                scaleY: [1, playing ? 1.1 : 1.04, 1],
+                scaleX: [1, playing ? 1.07 : 1.02, 1],
+              }}
+              transition={{
+                duration: 2.1 + (i % 3) * 0.3,
+                repeat: Infinity,
+                ease: "easeInOut",
+                delay: (i * 0.18) % 1.5,
+              }}
+            />
+          </g>
+        );
+      })}
+
+      {/* ── Disc (brown center) ── */}
+      <motion.circle
+        cx={cx} cy={cy} r={discR}
+        fill="url(#sfDisc)"
+        filter="url(#sfGlow)"
+        animate={{ scale: playing ? [1, 1.04, 1] : [1, 1.015, 1] }}
+        style={{ transformOrigin: `${cx}px ${cy}px` }}
+        transition={{ duration: 1.4, repeat: Infinity, ease: "easeInOut" }}
+      />
+      {/* seed pattern overlay */}
+      <circle cx={cx} cy={cy} r={discR} fill="url(#seeds)" opacity="0.55" />
+      {/* inner shiny disc */}
+      <circle cx={cx} cy={cy} r={innerDiscR} fill="url(#sfDiscInner)" />
+      <circle cx={cx} cy={cy} r={innerDiscR} fill="url(#seeds)" opacity="0.4" />
+      {/* specular highlight */}
+      <ellipse cx={cx - discR * 0.22} cy={cy - discR * 0.28} rx={discR * 0.22} ry={discR * 0.14}
+        fill="rgba(255,220,100,0.18)" />
+
+      {/* ── Floating pollen dots ── */}
+      {POLLEN.map((p) => (
+        <motion.circle
+          key={p.id}
+          cx={cx + p.x - size / 2}
+          cy={cy + p.y - size / 2}
+          r={p.r}
+          fill="#FFE566"
+          opacity={0.7}
+          animate={{
+            y: [0, -12 - p.r * 2, 0],
+            x: [0, (p.id % 2 === 0 ? 5 : -5), 0],
+            opacity: [0.7, 1, 0.5, 0.7],
+            scale: [1, 1.4, 0.8, 1],
+          }}
+          transition={{
+            duration: p.dur,
+            repeat: Infinity,
+            ease: "easeInOut",
+            delay: p.delay,
+          }}
+        />
+      ))}
+    </svg>
+  );
+}
+
+// ── Mini sunflower for card tile ──────────────────────────────────────────────
+function MiniSunflower() {
+  return (
+    <svg width="72" height="72" viewBox="0 0 72 72" overflow="visible">
+      <defs>
+        <radialGradient id="msfOuter" cx="50%" cy="30%" r="70%">
+          <stop offset="0%" stopColor="#FFE44D" />
+          <stop offset="100%" stopColor="#E08800" />
+        </radialGradient>
+        <radialGradient id="msfDisc" cx="40%" cy="38%" r="65%">
+          <stop offset="0%" stopColor="#7B4A0A" />
+          <stop offset="100%" stopColor="#3A1800" />
+        </radialGradient>
+      </defs>
+      {Array.from({ length: 12 }, (_, i) => {
+        const angle = (i / 12) * 360;
+        return (
+          <g key={i} transform={`rotate(${angle}, 36, 36)`}>
+            <motion.ellipse cx={36} cy={16} rx={4.5} ry={10}
+              fill="url(#msfOuter)"
+              style={{ transformOrigin: "36px 36px" }}
+              animate={{ scaleY: [1, 1.12, 1], scaleX: [1, 1.06, 1] }}
+              transition={{ duration: 2 + (i % 4) * 0.3, repeat: Infinity, ease: "easeInOut", delay: i * 0.15 }}
+            />
+          </g>
+        );
+      })}
+      <circle cx={36} cy={36} r={13} fill="url(#msfDisc)" />
+      <motion.circle cx={36} cy={36} r={13}
+        fill="none" stroke="#FFE044" strokeWidth={2} opacity={0.5}
+        animate={{ r: [13, 17, 13], opacity: [0.5, 0, 0.5] }}
+        transition={{ duration: 2, repeat: Infinity, ease: "easeOut" }}
+      />
+    </svg>
+  );
+}
+
+// ── Sunflower full modal ───────────────────────────────────────────────────────
+function SunflowerModal({ card }) {
+  const [playing, setPlaying] = useState(false);
+  const [current, setCurrent] = useState(0);
+  const [duration, setDuration] = useState(0);
+  const [hasError, setHasError] = useState(false);
+  const audioRef = useRef(null);
+
+  const toggle = () => {
+    const a = audioRef.current;
+    if (!a) return;
+    if (playing) a.pause();
+    else a.play().catch(() => setHasError(true));
+    setPlaying((p) => !p);
+  };
+
+  const seek = (e) => {
+    const a = audioRef.current;
+    if (!a || !duration) return;
+    const rect = e.currentTarget.getBoundingClientRect();
+    a.currentTime = ((e.clientX - rect.left) / rect.width) * duration;
+  };
+
+  useEffect(() => {
+    const a = audioRef.current;
+    if (!a) return;
+    const onTime = () => setCurrent(a.currentTime);
+    const onMeta = () => setDuration(a.duration);
+    const onEnd  = () => setPlaying(false);
+    const onErr  = () => { setHasError(true); setPlaying(false); };
+    a.addEventListener("timeupdate", onTime);
+    a.addEventListener("loadedmetadata", onMeta);
+    a.addEventListener("ended", onEnd);
+    a.addEventListener("error", onErr);
+    return () => {
+      a.removeEventListener("timeupdate", onTime);
+      a.removeEventListener("loadedmetadata", onMeta);
+      a.removeEventListener("ended", onEnd);
+      a.removeEventListener("error", onErr);
+      a.pause();
+    };
+  }, []);
+
+  const progress = duration ? current / duration : 0;
+
+  return (
+    <div
+      className="relative rounded-3xl overflow-hidden"
+      style={{ background: "linear-gradient(160deg, #fffde0 0%, #fff3a0 40%, #ffe066 100%)" }}
+      onClick={(e) => e.stopPropagation()}
+    >
+      {/* warm sun-ray background */}
+      <div className="absolute inset-0 pointer-events-none"
+        style={{
+          background: "repeating-conic-gradient(from 0deg at 50% 100%, rgba(255,220,0,0.08) 0deg 10deg, transparent 10deg 20deg)",
+        }}
+      />
+      {/* top shimmer strip */}
+      <div className="absolute top-0 left-0 right-0 h-1 rounded-t-3xl"
+        style={{ background: "linear-gradient(90deg, #F4A900, #FFE044, #F4A900)" }}
+      />
+
+      <div className="relative p-6 sm:p-8">
+        {/* badge */}
+        <span className="inline-block text-[10px] font-bold tracking-widest px-3 py-1 rounded-full text-white mb-4"
+          style={{ background: "#F4A900" }}>
+          SUNFLOWER 🌻
+        </span>
+
+        {/* big animated sunflower — CENTREPIECE */}
+        <div className="flex justify-center mb-4">
+          <motion.div
+            animate={playing ? { rotate: [0, 3, -3, 0] } : { rotate: 0 }}
+            transition={{ duration: 4, repeat: playing ? Infinity : 0, ease: "easeInOut" }}
+          >
+            <AnimatedSunflower playing={playing} size={200} />
+          </motion.div>
+        </div>
+
+        {/* title */}
+        <h3 className="font-display text-2xl text-center mb-0.5" style={{ color: "#7A4A00" }}>
+          My Sunflower 🌻
+        </h3>
+        <p className="font-hand text-sm text-center mb-5" style={{ color: "rgba(122,74,0,0.6)" }}>
+          {card.artistLabel}
+        </p>
+
+        {/* ── Audio player ── */}
+        {/* waveform */}
+        <div className="mb-4">
+          <WaveformBars playing={playing} color="#F4A900" />
+        </div>
+
+        {/* seek bar */}
+        <div
+          className="relative w-full h-2 rounded-full cursor-pointer mb-2 overflow-hidden"
+          style={{ background: "rgba(244,169,0,0.2)" }}
+          onClick={seek}
+        >
+          <motion.div
+            className="absolute inset-y-0 left-0 rounded-full"
+            style={{ background: "linear-gradient(90deg, #F4A900, #FFD700)" }}
+            animate={{ width: `${progress * 100}%` }}
+            transition={{ duration: 0.15 }}
+          />
+        </div>
+        <div className="flex justify-between text-xs font-body mb-5" style={{ color: "rgba(122,74,0,0.5)" }}>
+          <span>{fmt(current)}</span>
+          <span>{fmt(duration)}</span>
+        </div>
+
+        {/* error */}
+        {hasError && (
+          <p className="text-center font-body text-sm mb-4 rounded-xl p-3 border"
+            style={{ color: "#7A4A00", background: "rgba(244,169,0,0.1)", borderColor: "rgba(244,169,0,0.3)" }}>
+            Drop the song at <code className="font-mono text-xs bg-yellow-100 px-1 rounded">/audio/sunflower-song.mp3</code>
+          </p>
+        )}
+
+        {/* play / pause */}
+        <div className="flex justify-center">
+          <motion.button
+            onClick={toggle}
+            whileHover={{ scale: 1.1 }}
+            whileTap={{ scale: 0.9 }}
+            className="w-16 h-16 rounded-full text-2xl flex items-center justify-center shadow-xl border-2"
+            style={{
+              background: "linear-gradient(135deg, #F4A900, #FFD700)",
+              borderColor: "rgba(255,255,255,0.6)",
+              color: "#fff",
+            }}
+            aria-label={playing ? "Pause" : "Play"}
+          >
+            <motion.span
+              animate={playing ? { scale: [1, 1.15, 1] } : { scale: 1 }}
+              transition={{ duration: 0.8, repeat: playing ? Infinity : 0 }}
+            >
+              {playing ? "⏸" : "▶"}
+            </motion.span>
+          </motion.button>
+        </div>
+      </div>
+
+      <audio ref={audioRef} src={card.src} preload="metadata" />
+    </div>
+  );
+}
+
 // ── Spotify embed player modal ────────────────────────────────────────────────
 function SpotifyModal({ card }) {
   return (
@@ -382,6 +733,8 @@ function MemoryModal({ card, onClose }) {
           ✕
         </button>
 
+        {card.type === "sunflower" && <SunflowerModal card={card} onClose={onClose} />}
+
         {card.type === "spotify" && <SpotifyModal card={card} onClose={onClose} />}
         {card.type === "audio" && <AudioPlayerModal card={card} onClose={onClose} />}
         {card.type === "letter" && <LetterModal card={card} onClose={onClose} />}
@@ -435,20 +788,19 @@ function MemoryCardTile({ card, index, onOpen }) {
         </span>
 
         {/* Icon */}
-        <motion.div
-          className="text-5xl mb-4"
-          animate={{
-            y: [0, -4, 0],
-            rotate: [0, -3, 3, 0],
-          }}
-          transition={{
-            duration: 3.5 + index * 0.4,
-            repeat: Infinity,
-            ease: "easeInOut",
-          }}
-        >
-          {card.icon}
-        </motion.div>
+        {card.type === "sunflower" ? (
+          <div className="mb-4">
+            <MiniSunflower />
+          </div>
+        ) : (
+          <motion.div
+            className="text-5xl mb-4"
+            animate={{ y: [0, -4, 0], rotate: [0, -3, 3, 0] }}
+            transition={{ duration: 3.5 + index * 0.4, repeat: Infinity, ease: "easeInOut" }}
+          >
+            {card.icon}
+          </motion.div>
+        )}
 
         {/* Title */}
         <h4 className="font-display text-lg sm:text-xl text-ink leading-tight mb-1">

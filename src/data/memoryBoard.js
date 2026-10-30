@@ -19,6 +19,25 @@
 
 export const memoryCards = [
   {
+    id: "sunflower",
+    type: "sunflower",
+    icon: "🌻",
+    title: "My Sunflower",
+    subtitle: "because that's what you are to me 🌻",
+    hint: "tap to bloom 🌻",
+    glowColor: "#F4A900",
+    glowRgba: "rgba(244, 169, 0, 0.4)",
+    bgFrom: "#fffde0",
+    bgTo: "#fff8c0",
+    borderColor: "rgba(244, 169, 0, 0.35)",
+    badgeColor: "#F4A900",
+    badgeLabel: "SUNFLOWER",
+    // ▼ Drop a song at public/audio/sunflower-song.mp3  (optional — plays if present)
+    src: "/audio/sunflower-song.mp3",
+    artistLabel: "always turning towards you ☀️",
+  },
+
+  {
     id: "fav-song",
     type: "audio",
     icon: "💿",
